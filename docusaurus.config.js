@@ -11,11 +11,12 @@ const config = {
     v4: true,
   },
 
-  url: 'https://audit-intelligence.example.com',
-  baseUrl: '/',
+  url: 'https://alokrathava.github.io',
+  baseUrl: '/audit-intelligence-docs-site/',
 
-  organizationName: 'audit-intelligence',
-  projectName: 'audit-intelligence',
+  organizationName: 'alokrathava',
+  projectName: 'audit-intelligence-docs-site',
+  trailingSlash: false,
 
   onBrokenLinks: 'throw',
 
