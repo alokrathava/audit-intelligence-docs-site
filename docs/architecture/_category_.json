@@ -1,0 +1,8 @@
+{
+  "label": "Architecture",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "System-wide architecture: service topology, data model, cross-cutting concerns and shared vocabulary that every module builds on."
+  }
+}

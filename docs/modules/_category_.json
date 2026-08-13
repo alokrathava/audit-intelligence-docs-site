@@ -1,0 +1,8 @@
+{
+  "label": "Modules",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Every product module: functional features, business rules, data model, API surface, and DFD Level 0 through Level 3."
+  }
+}
