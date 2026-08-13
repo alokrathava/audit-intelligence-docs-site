@@ -23,7 +23,7 @@ module is the only one that turns an event into something a human sees.
 
 | ID | Feature | Description | Acceptance criteria |
 |---|---|---|---|
-| FEAT-NOTIF-001 | Event catalogue subscription | Module subscribes to the platform event bus | New event types require a registry entry, not code scattered across producers |
+| FEAT-NOTIF-001 | Event catalogue subscription | Module subscribes to the platform event bus | New event types require a registry entry, not code scattered across producers — e.g. `intake.uploaded` from [Client Intake Portal](./15-client-intake) notifies the CA without polling |
 | FEAT-NOTIF-002 | Email delivery | Transactional email for key events | Delivered within 1 minute of the triggering event under normal load |
 | FEAT-NOTIF-003 | In-app notifications | Bell-icon feed within the product | Read/unread state tracked per user |
 | FEAT-NOTIF-004 | Per-user preferences | User chooses which event types trigger email vs in-app-only vs none | Security-critical events (e.g. new login, password change) cannot be fully disabled |

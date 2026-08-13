@@ -38,6 +38,8 @@ sidebar_position: 1
 | `finding.resolved` | Findings Service | Audit Trail | `finding_id`, `resolved_by` |
 | `report.generated` | Reporting Service | Notification | `finding_id`, `report_path` |
 | `usage.recorded` | Ingestion / Rule Engine | Billing Service | `tenant_id`, `metric`, `quantity` |
+| `intake.link_created` | Ingestion Service | Notification | `engagement_id`, `intake_link_id`, `created_by` |
+| `intake.uploaded` | Ingestion Service | Notification, Ingestion (self-dispatch) | `engagement_id`, `intake_link_id`, `file_type` |
 
 Every event is consumed by the Audit Trail Service, which is the implicit subscriber to the whole
 bus (omitted from each row above for brevity) — see

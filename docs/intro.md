@@ -59,6 +59,7 @@ equal depth, because a contractor pricing this build needs both to scope accurat
 | 12 | [Audit Trail & Compliance](./modules/12-audit-trail-compliance) | Immutable activity log, retention, regulator export |
 | 13 | [Admin & Settings](./modules/13-admin-settings) | Firm profile, users, roles, rule config, API keys |
 | 14 | [Integrations & Public API](./modules/14-integrations-api) | Tally connector, GST portal, REST API, webhooks |
+| 15 | [Client Intake Portal](./modules/15-client-intake) | Tokenized client upload links, canonical template |
 
 ## DFD Level 0 — Context Diagram
 

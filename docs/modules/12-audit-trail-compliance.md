@@ -42,12 +42,15 @@ platform produces for the client's books. Every event on the platform bus is cap
   both the impersonating support actor and the impersonated user, never one or the other alone.
 - **BR-AUD-04**: The audit log itself is tenant-isolated, same as every other tenant-scoped table
   — a firm can never see another firm's activity log.
+- **BR-AUD-05**: Not every actor is a `user`. A [client intake link](./15-client-intake) upload has
+  no logged-in user behind it; `actor_type` records this so `FEAT-AUD-003` attribution still holds
+  without inventing a synthetic user row.
 
 ## Data model
 
 | Entity | Key fields | Scope |
 |---|---|---|
-| `audit_log` | `id`, `tenant_id`, `actor_id`, `impersonated_by`, `action`, `entity_type`, `entity_id`, `metadata`, `occurred_at` | Tenant |
+| `audit_log` | `id`, `tenant_id`, `actor_type`, `actor_id`, `impersonated_by`, `action`, `entity_type`, `entity_id`, `metadata`, `occurred_at` | Tenant |
 | `retention_policy` | `tenant_id`, `retention_days` | Tenant |
 | `log_export` | `id`, `tenant_id`, `period_start`, `period_end`, `file_path`, `checksum` | Tenant |
 

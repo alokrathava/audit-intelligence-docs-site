@@ -18,6 +18,7 @@ the common `transaction` schema that [Normalization](./06-ledger-normalization) 
 | Actor | Interacts with this module as |
 |---|---|
 | Audit Staff | Uploads files to an engagement, reviews rejected rows |
+| Client (via intake link) | Uploads files without a platform account — see [Client Intake Portal](./15-client-intake) |
 
 ## Functional features
 
@@ -172,3 +173,5 @@ unbalanced on its own.
 - OCR of scanned paper vouchers — source files must be digital exports.
 - Direct live API pull from Tally (real-time sync) — see [Integrations & Public API](./14-integrations-api)
   for the connector roadmap; v1 ingestion is file-upload only.
+- Client-authenticated upload — a client submits files via a tokenized, unauthenticated link, not
+  a platform login; see [Client Intake Portal](./15-client-intake).

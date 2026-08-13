@@ -30,6 +30,7 @@ data sources beyond simple file upload.
 | FEAT-INT-005 | Webhook management | Register/test/delete webhook endpoints | Test-send feature lets a developer verify their endpoint before relying on it |
 | FEAT-INT-006 | GST portal connector | Structured handling of GSTR-2B beyond raw file upload | Validates the file is a genuine GST portal export before parsing |
 | FEAT-INT-007 | Tally connector groundwork | Defined interface for a future direct Tally integration | Ingestion's event schema already names fields generically enough to support a non-file source later |
+| FEAT-INT-009 | Client intake links | Non-API-key, non-file-only ingress for client-submitted uploads | See [Client Intake Portal](./15-client-intake) — a separate token type, not an `api_key` |
 | FEAT-INT-008 | API usage analytics | Per-key request volume and error rate | Surfaced to the firm admin alongside billing usage |
 
 ## Business rules & constraints

@@ -29,6 +29,7 @@ same person can hold different roles at different firms.
 | Create engagement | ✅ | ✅ | ❌ | ❌ |
 | Assign engagement team | ✅ | ✅ | ❌ | ❌ |
 | Upload documents | ✅ | ✅ | ✅ (if assigned) | ❌ |
+| Generate client intake link | ✅ | ✅ | ✅ (if assigned) | ❌ |
 | Trigger rule run | ✅ | ✅ | ✅ (if assigned) | ❌ |
 | Assign / comment on findings | ✅ | ✅ | ✅ (if assigned) | ❌ |
 | Resolve a finding | ✅ | ✅ | ✅ (if assigned) | ❌ |
@@ -47,6 +48,9 @@ same person can hold different roles at different firms.
   `engagement_team` for — see [Engagements → BR-ENG-04](../modules/04-engagements#business-rules--constraints).
 - **A tenant always retains at least one Admin** — see
   [Admin & Settings → Edge cases](../modules/13-admin-settings#edge-cases--failure-modes).
+- **A client intake link is not a role** — it's a bearer token scoped to one engagement's upload
+  endpoint only, held by an unauthenticated external party. It never appears in `firm_user_role`
+  and grants no read access. See [Client Intake Portal](../modules/15-client-intake#business-rules--constraints).
 - **Platform Operator never has tenant data read access** — operator tooling operates on tenant
   metadata (status, health metrics) and security events, never on engagement/transaction/finding
   content, preserving the isolation guarantee in
