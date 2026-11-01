@@ -1,0 +1,8 @@
+{
+  "label": "Use Cases",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Actor-based scenarios, main and alternative flows, outcomes and acceptance criteria."
+  }
+}

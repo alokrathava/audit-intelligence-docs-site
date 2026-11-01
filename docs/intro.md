@@ -1,139 +1,74 @@
 ---
 id: intro
-title: Audit Intelligence Platform
+title: Audit Intelligence — Use-Case Study
 slug: /
 sidebar_position: 1
 ---
 
-# Audit Intelligence Platform
+# Audit Intelligence System
 
-## What this product is
+**Use-case study · Proposed SaaS concept · Indian statutory audit firms**
 
-The Audit Intelligence Platform is a multi-tenant SaaS product for statutory audit firms in
-India. A firm signs up, subscribes to a plan, invites its audit staff, and creates one
-**engagement** per client per financial year. For each engagement, the firm uploads the client's
-books — Tally XML exports, Excel/CSV ledger dumps, GSTR-2B JSON filings — and the platform:
+:::note Project status
+This repository defines proposed user workflows and design assumptions. The audit platform, rule engine, integrations, and customer results have **not** been demonstrated by this repository.
+:::
 
-1. **Ingests** the files and parses them into a normalized transaction table.
-2. **Normalizes** every ledger name onto a fixed standard chart of accounts.
-3. **Runs** a deterministic statutory rule engine across the full transaction set — no LLM, no
-   model variance, the same input always produces the same finding.
-4. **Surfaces findings** the audit team reviews, assigns, and resolves.
-5. **Generates** ready-to-send query letters and a risk dashboard the engagement partner signs
-   off on.
+## Problem statement
 
-Every number a partner signs is reproducible from the same inputs, every time. The rule engine is
-arithmetic against fixed statutory thresholds (Sec 40A(3), Sec 43B(h), SA 240, CGST Sec 16(2)(aa))
-— there is no judgment call for a model to make, so none is delegated to one.
+A statutory audit firm must review large volumes of client records, handle inconsistent ledger descriptions, reconcile different exports, and document why an exception was accepted or questioned. The question is:
 
-Around that audit-specific core sits the machinery every SaaS product needs: accounts, tenants,
-subscriptions, notifications, an audit trail, and a public API. This site documents both halves in
-equal depth, because a contractor pricing this build needs both to scope accurately.
+> How can an audit team collect digital books, identify reproducible review candidates, preserve evidence, and hand the engagement to a partner for a defensible review?
 
-## How this documentation is organized
+## Proposed system outcome
 
-- **[Architecture](./architecture/system-context)** — the system as a whole: service topology,
-  the shared data model, cross-cutting concerns (security, observability, error handling), and a
-  glossary of statutory and domain terms used throughout.
-- **Modules** — one page per product module. Each follows the same template: purpose, actors and
-  permissions, a functional feature table with acceptance criteria, business rules, data model,
-  API surface, DFD Level 0 through Level 3, edge cases, and what's explicitly out of scope.
-- **Reference** — the full statutory rule catalogue, the role/permission matrix, and non-functional
-  requirements (performance, retention, availability) that apply across every module.
+The firm creates **one engagement per client per Indian financial year**. The system supports digital intake, validation, ledger normalization, reproducible checks, finding investigation, client query letters, partner review, and traceable activity. It **supports**, but cannot replace, auditor judgment or an audit opinion.
 
-## Module index
+## Actors
 
-| # | Module | Owns |
-|---|---|---|
-| 01 | [Auth & Identity](./modules/01-auth-identity) | Login, MFA, sessions, SSO, invitations, password reset |
-| 02 | [Multi-Tenancy](./modules/02-multi-tenancy) | Firm/tenant lifecycle, schema isolation, provisioning |
-| 03 | [Subscriptions & Billing](./modules/03-subscriptions-billing) | Plans, trials, proration, invoices, metering |
-| 04 | [Engagements](./modules/04-engagements) | Clients, financial years, engagement lifecycle, team assignment |
-| 05 | [Document Ingestion](./modules/05-document-ingestion) | Upload, virus scan, parsing (Tally/Excel/GSTR-2B) |
-| 06 | [Ledger Normalization](./modules/06-ledger-normalization) | Standard taxonomy mapping, fuzzy match, review queue |
-| 07 | [Rule Engine](./modules/07-rule-engine) | Statutory rule registry, orchestration, thresholds |
-| 08 | [Findings Workflow](./modules/08-findings-workflow) | Finding lifecycle, assignment, evidence, sign-off |
-| 09 | [Reporting & Query Letters](./modules/09-reporting-query-letters) | .docx generation, branding, export bundles |
-| 10 | [Dashboard & Analytics](./modules/10-dashboard-analytics) | Risk dashboard, trends, usage widgets |
-| 11 | [Notifications](./modules/11-notifications) | Email/in-app events, preferences, digests |
-| 12 | [Audit Trail & Compliance](./modules/12-audit-trail-compliance) | Immutable activity log, retention, regulator export |
-| 13 | [Admin & Settings](./modules/13-admin-settings) | Firm profile, users, roles, rule config, API keys |
-| 14 | [Integrations & Public API](./modules/14-integrations-api) | Tally connector, GST portal, REST API, webhooks |
-| 15 | [Client Intake Portal](./modules/15-client-intake) | Tokenized client upload links, canonical template |
+| Actor | Responsibility | Example scenarios |
+| --- | --- | --- |
+| Firm Admin | Set up tenant, staff, plan, settings | [UC-01](./use-cases/01-firm-onboarding), [UC-11](./use-cases/11-firm-administration) |
+| Engagement Partner | Supervise engagement and sign-off | [UC-02](./use-cases/02-create-engagement), [UC-09](./use-cases/09-partner-sign-off) |
+| Audit Staff | Collect, analyze, investigate, document | [UC-04](./use-cases/04-validate-records), [UC-07](./use-cases/07-investigate-findings) |
+| Client Representative | Submit documents through a restricted link | [UC-03](./use-cases/03-client-intake) |
+| Platform Operator | Operate infrastructure without reading audit content | [UC-12](./use-cases/12-evidence-and-audit-history) |
 
-## DFD Level 0 — Context Diagram
+## Example end-to-end scenario
+
+A CA firm audits a client for FY 2025–26. The partner creates the engagement and assigns staff. The client uploads Tally, spreadsheet and GSTR-2B exports. The platform validates files and displays rejected records; staff confirm ambiguous ledger mappings. The firm runs a recorded set of deterministic checks. An auditor inspects flagged transactions, asks the client for an explanation, records the outcome, and prepares a query letter. The partner reviews unresolved critical issues and explicitly signs off once the applicable gates are satisfied.
+
+This is a **hypothetical user journey**, not a description of working software.
 
 ```mermaid
 flowchart LR
-    Auditor(["Audit Firm User"])
-    Admin(["Firm Admin"])
-    Platform[["Audit Intelligence Platform"]]
-    Client[("Client Accounting<br/>System Exports")]
-    GSTPortal[("GST Portal<br/>GSTR-2B")]
-    Payment[("Payment Gateway")]
-    Email[("Email Provider")]
-
-    Auditor -- "creates engagement, uploads files,<br/>reviews findings" --> Platform
-    Platform -- "risk dashboard,<br/>query letters (.docx)" --> Auditor
-    Admin -- "manages tenant, users, billing" --> Platform
-    Platform -- "invoices, usage reports" --> Admin
-    Client -- "Tally XML / Excel / CSV" --> Platform
-    GSTPortal -- "GSTR-2B JSON" --> Platform
-    Platform -- "charge, subscription events" --> Payment
-    Payment -- "payment result, webhooks" --> Platform
-    Platform -- "verification, notifications" --> Email
+    A["Firm onboarding"] --> B["Engagement"]
+    B --> C["Client file intake"]
+    C --> D["Validation and mapping"]
+    D --> E["Deterministic checks"]
+    E --> F["Human investigation"]
+    F --> G["Query letters"]
+    G --> H["Partner sign-off"]
+    D --> X["Rejected / unmapped items"]
+    X --> F
 ```
 
-## DFD Level 1 — Platform Service Topology
+## Core boundaries
 
-```mermaid
-flowchart TB
-    Client(["Client / Browser / API consumer"])
-    GW["API Gateway<br/>REST + JWT"]
-    Auth["Auth & Identity Service"]
-    Tenant["Tenant Service"]
-    Billing["Billing Service"]
-    Eng["Engagement Service"]
-    Ing["Ingestion Service"]
-    Norm["Normalization Service"]
-    Rules["Rule Engine Service"]
-    Find["Findings Service"]
-    Rep["Reporting Service"]
-    Notif["Notification Service"]
-    Audit["Audit Trail Service"]
-    Bus{{"Event Bus"}}
-    DB[("Postgres<br/>schema-per-tenant")]
+- **Deterministic detection, human decisions:** rule outputs flag possible exceptions. They do not automatically establish fraud, non-compliance, or audit conclusions.
+- **Source and decision traceability:** link each candidate finding to a source snapshot, rule/configuration version and review history.
+- **Firm and engagement access control:** a user may only view records permitted by their tenant and engagement assignment; client upload links grant upload-only access.
+- **Proposed v1 exclusions:** OCR, bookkeeping, automated audit opinions, live Tally synchronization, predictive scoring, and unrestricted client dashboards.
 
-    Client -->|"REST + JWT"| GW
-    GW --> Auth
-    GW -->|"X-Tenant-ID"| Tenant
-    GW --> Billing
-    GW --> Eng
-    GW --> Ing
-    GW --> Find
-    GW --> Rep
+## Measurable acceptance targets—not achieved results
 
-    Ing -->|"file.uploaded"| Bus
-    Bus --> Norm
-    Norm -->|"data.normalized"| Bus
-    Bus --> Rules
-    Rules -->|"rules.completed"| Bus
-    Bus --> Find
-    Bus --> Rep
-    Bus --> Notif
-    Bus --> Audit
+| Criterion | Future validation |
+| --- | --- |
+| Repeatable findings | Compare canonical outputs for identical input and rule configuration |
+| No silent data loss | Verify rejected rows are counted and reported |
+| Human approval | Ensure unresolved Critical items block partner sign-off |
+| Tenant isolation | Prove forged tenant and engagement requests cannot leak content |
+| Evidence chain | Resolve a finding to source rows, rules and decisions |
 
-    Auth <--> DB
-    Tenant <--> DB
-    Billing <--> DB
-    Eng <--> DB
-    Ing <--> DB
-    Norm <--> DB
-    Rules <--> DB
-    Find <--> DB
-    Rep <--> DB
-    Audit <--> DB
-```
+## Navigate
 
-See [Architecture → System Context](./architecture/system-context) for the full event catalogue
-and Level 2 breakdown of this diagram.
+Start with the **[use-case catalogue](./use-cases/index)**. The [module specifications](./modules/04-engagements) and [proposed architecture](./architecture/system-context) remain supporting implementation options. The [statutory rule catalogue](./reference/statutory-rules) requires professional/legal validation before real-world use.

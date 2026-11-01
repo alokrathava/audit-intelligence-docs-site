@@ -3,8 +3,8 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Audit Intelligence Platform',
-  tagline: 'Zero-LLM, deterministic statutory audit automation',
+  title: 'Audit Intelligence — Use-Case Study',
+  tagline: 'Proposed deterministic audit workflows for Indian CA firms',
   favicon: 'img/favicon.ico',
 
   future: {
@@ -54,13 +54,13 @@ const config = {
         respectPrefersColorScheme: true,
       },
       navbar: {
-        title: 'Audit Intelligence Platform',
+        title: 'Audit Intelligence | Use Cases',
         items: [
           {
             type: 'docSidebar',
             sidebarId: 'docsSidebar',
             position: 'left',
-            label: 'Docs',
+            label: 'Explore Use Cases',
           },
         ],
       },
@@ -74,7 +74,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Audit Intelligence Platform — internal documentation. Authored by Alok Rathava.`,
+        copyright: `Audit Intelligence — proposed use-case documentation. Authored by Alok Rathava.`,
       },
       prism: {
         theme: prismThemes.github,
