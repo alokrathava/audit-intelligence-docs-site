@@ -7,7 +7,7 @@ sidebar_position: 1
 
 # Audit Intelligence System
 
-**Use-case study · Proposed SaaS concept · Indian statutory audit firms**
+**Use-case study · Proposed global-ready financial audit SaaS · India-first reference jurisdiction**
 
 :::note Project status
 This repository defines proposed user workflows and design assumptions. The audit platform, rule engine, integrations, and customer results have **not** been demonstrated by this repository.
@@ -15,13 +15,13 @@ This repository defines proposed user workflows and design assumptions. The audi
 
 ## Problem statement
 
-A statutory audit firm must review large volumes of client records, handle inconsistent ledger descriptions, reconcile different exports, and document why an exception was accepted or questioned. The question is:
+A financial audit firm must review client records, handle inconsistent ledgers, reconcile exports, and document why exceptions were accepted or questioned. Jurisdictions differ in fiscal calendars, laws, retention and local audit standards. The question is:
 
 > How can an audit team collect digital books, identify reproducible review candidates, preserve evidence, and hand the engagement to a partner for a defensible review?
 
 ## Proposed system outcome
 
-The firm creates **one engagement per client per Indian financial year**. The system supports digital intake, validation, ledger normalization, reproducible checks, finding investigation, client query letters, partner review, and traceable activity. It **supports**, but cannot replace, auditor judgment or an audit opinion.
+The firm creates **one engagement per client and reporting period**, with a configured jurisdiction and applicable rule-pack version. India is the first reference use case, not the platform's permanent boundary. The system supports digital intake, validation, ledger normalization, reproducible checks, finding investigation, client query letters, partner review, and traceable activity. It **supports**, but cannot replace, auditor judgment or an audit opinion.
 
 ## Actors
 
@@ -35,9 +35,9 @@ The firm creates **one engagement per client per Indian financial year**. The sy
 
 ## Example end-to-end scenario
 
-A CA firm audits a client for FY 2025–26. The partner creates the engagement and assigns staff. The client uploads Tally, spreadsheet and GSTR-2B exports. The platform validates files and displays rejected records; staff confirm ambiguous ledger mappings. The firm runs a recorded set of deterministic checks. An auditor inspects flagged transactions, asks the client for an explanation, records the outcome, and prepares a query letter. The partner reviews unresolved critical issues and explicitly signs off once the applicable gates are satisfied.
+In the India-first example, a CA firm audits a client for FY 2025–26. The partner creates the engagement and assigns staff. The client uploads Tally, spreadsheet and GSTR-2B exports. The platform validates files and displays rejected records; staff confirm ambiguous ledger mappings. The firm runs a recorded set of deterministic checks. An auditor inspects flagged transactions, asks the client for an explanation, records the outcome, and prepares a query letter. The partner reviews unresolved critical issues and explicitly signs off once the applicable gates are satisfied.
 
-This is a **hypothetical user journey**, not a description of working software.
+This is a **hypothetical India-specific scenario**, not a description of working software. Other jurisdictions require independently verified rules and local professional review.
 
 ```mermaid
 flowchart LR
@@ -51,6 +51,12 @@ flowchart LR
     D --> X["Rejected / unmapped items"]
     X --> F
 ```
+
+## Global scope and platform assurance
+
+**Approach:** reuse the engagement/evidence/review engine globally; isolate Indian rules, import formats, fiscal calendar, currency defaults and legal assumptions in a [jurisdiction pack](./architecture/jurisdiction-model.md). The product focuses on **financial audit**, not every type of audit. See [UC-13](./use-cases/13-configure-jurisdiction.md).
+
+**Security:** propose controls informed by ISO/IEC 27001/27002 and SOC 2 Trust Services Criteria, plus a conditional PCI DSS assessment for payment-account data. **No ISO certification, SOC 2 report or PCI DSS validation is claimed.** See [assurance design](./architecture/assurance-design.md), [framework comparison](./reference/assurance-frameworks.md), and [UC-14](./use-cases/14-control-evidence-review.md).
 
 ## Core boundaries
 
@@ -68,6 +74,9 @@ flowchart LR
 | Human approval | Ensure unresolved Critical items block partner sign-off |
 | Tenant isolation | Prove forged tenant and engagement requests cannot leak content |
 | Evidence chain | Resolve a finding to source rows, rules and decisions |
+| Jurisdiction check | Reject unapproved, unsupported, or out-of-effective-period statutory rule packs |
+| Platform assurance | Produce scoped access/change/incident evidence, with independent verification of controls before assurance claims |
+| Payment boundary | Record PCI DSS scoping and third-party payment responsibilities; flag unexpected card data in uploads |
 
 ## Navigate
 

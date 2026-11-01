@@ -6,8 +6,7 @@ sidebar_position: 1
 
 # Statutory Rule Catalogue
 
-The full rule registry executed by [Rule Engine](../modules/07-rule-engine). Every rule here is
-deterministic — a fixed threshold check against transaction data, no judgment, no model.
+**India-specific illustrative rule pack.** The rules below are not a globally applicable registry or verified legal advice. Effective dates, exceptions, thresholds and applicability must be assessed by qualified Indian audit/legal professionals before actual use. **Never apply them automatically outside a validated India engagement.** The [proposed engine](../modules/07-rule-engine.md) should pin a reviewed [jurisdiction pack](../architecture/jurisdiction-model.md), use deterministic checks and treat results as candidates for human review.
 
 ## Summary
 

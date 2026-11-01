@@ -1,42 +1,40 @@
-# Audit Intelligence System — Use-Case Study
+# Audit Intelligence System — Financial Audit Use-Case Study
 
-> **Project status: proposed concept and use-case documentation.** This repository is not a working audit SaaS product and does not claim real customer outcomes.
+> **Proposed design, not a deployed, certified or independently attested product.**
 
-## Problem
+## Direction: global-ready financial auditing, India-first delivery
 
-Indian Chartered Accountant (CA) firms receive a client's records in different formats—Tally XML, spreadsheets, and GSTR-2B exports. Audit teams must reconcile, investigate, document, and review exceptions across financial years while preserving evidence.
+Audit Intelligence proposes a reusable **financial audit workflow platform**: create engagements, collect digital evidence, run reproducible exception checks, document reviewer decisions, prepare query letters and obtain accountable partner sign-off.
 
-## Proposed use case
+**India is the first illustrative jurisdiction**, with Tally, GSTR-2B and Indian statutory checks. Core workflow concepts should not depend on India's fiscal calendar, INR, GST or local retention assumptions. Jurisdiction-specific laws, reporting periods, data formats and audit criteria belong in **versioned, reviewed rule packs**. Other country packs are proposed future work, not supported today.
 
-A CA firm creates an audit engagement for one client and financial year. Staff collect digital books through a limited upload link, review validation errors and ledger mappings, execute repeatable statutory *checks*, investigate the results, draft client query letters, and route the engagement to a partner for sign-off.
+The platform **assists qualified auditors**: a flagged record is not an audit opinion, a fraud verdict or an established statutory violation.
 
-**Audit findings are review candidates, not proven legal violations or autonomous audit opinions.** Applicability, statutory exceptions, and conclusions stay with qualified auditors.
+## Where to read
 
-## Start here
+- [Use-case overview](docs/intro.md)
+- [14 actor-based use cases](docs/use-cases/index.md)
+- [Jurisdiction and rule-pack architecture](docs/architecture/jurisdiction-model.md)
+- [Security and assurance controls](docs/architecture/assurance-design.md)
+- [Framework applicability: ISO 27001/27002, SOC 2, PCI DSS, ISA](docs/reference/assurance-frameworks.md)
+- [India-specific illustrative rule catalogue](docs/reference/statutory-rules.md)
 
-- [Use-case study and actors](docs/intro.md)
-- [12 actor-based use cases](docs/use-cases/index.md)
-- [Proposed architecture](docs/architecture/system-context.md)
-- [Detailed functional specifications](docs/modules/04-engagements.md)
-- [Illustrative rule catalogue](docs/reference/statutory-rules.md)
+## Assurance principles
 
-### Proposed boundaries
+Consider ISO/IEC 27001:2022, ISO/IEC 27002:2022 and AICPA SOC 2 Trust Services Criteria when designing platform security governance and evidence. Assess PCI DSS v4.0.1 **only against actual payment-account data flows and responsibilities**; financial ledger data alone does not establish PCI scope. Independent certifications, SOC 2 reports and PCI assessments require implemented controls and appropriate examination. This documentation makes **no compliance claim**.
 
-In scope: firm/workspace separation, engagements, digital file intake, validation, taxonomy mapping, deterministic rule checks, investigation, reporting, partner-controlled sign-off, and event history.
+## Boundaries
 
-Out of scope: replacing auditors, generating audit opinions, live bookkeeping/POS, scanned voucher OCR, automated fraud judgments, and customer-facing bookkeeping.
+V1 focuses on **financial audit workflows**, not all management-system, environmental, quality or operational audits. The existing detailed module specifications illustrate the **India-first concept** and are not yet generalized or legally validated. Statutory thresholds, standards, retention periods and deployment locations must be reviewed for each jurisdiction and effective period.
 
-**Compliance caveat:** The rule references, thresholds, exceptions, retention requirements, and performance targets in these documents are design assumptions—not validated legal advice. A CA/domain expert must review them against the law and standards effective for each engagement before production use.
+## Documentation website
 
-## View documentation locally
-
-This repository is a Docusaurus documentation website, not an implementation of the proposed services.
+This repository contains a Docusaurus documentation site, not the application:
 
 ```bash
-npm install
+npm ci
 npm run start
+npm run build
 ```
-
-Use `npm run build` to build the documentation. This change does not publish the site.
 
 **Author:** Alok Rathava.
