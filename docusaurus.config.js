@@ -12,10 +12,10 @@ const config = {
   },
 
   url: 'https://alokrathava.github.io',
-  baseUrl: '/audit-intelligence-docs-site/',
+  baseUrl: '/Audit-Intelligence-System-Usecase/',
 
   organizationName: 'alokrathava',
-  projectName: 'audit-intelligence-docs-site',
+  projectName: 'Audit-Intelligence-System-Usecase',
   trailingSlash: false,
 
   onBrokenLinks: 'throw',
