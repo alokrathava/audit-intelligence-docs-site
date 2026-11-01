@@ -11,9 +11,9 @@ A use case states **what an actor wants to achieve**, the initiating event, cond
 
 ## System boundary
 
-**Inside:** firm workspace, identity and role checks, engagements, digital intake, validation, mappings, rule execution, findings, query documents, sign-off and audit trail.
+**Inside:** firm workspace, identity and role checks, engagements, jurisdiction pack selection, digital intake, validation, mappings, rule execution, findings, query documents, sign-off, audit trail and security-control evidence.
 
-**Outside:** client accounting systems, the GST portal and payment/email providers. Clients do not need full platform accounts in the proposed v1. The platform does not issue audit opinions or conclusively determine legal violations.
+**Outside:** client accounting systems, jurisdictional tax/reporting systems (India's GST portal is one example), payment/email providers, and independent assessors. Clients do not need full platform accounts in the proposed v1. The platform does not issue audit opinions or conclusively determine legal violations.
 
 ## End-to-end flow
 
@@ -30,6 +30,8 @@ flowchart TD
   I --> J["UC-10 Roll forward"]
   K["UC-11 Firm administration"] -. supports .-> B
   L["UC-12 History and evidence"] -. records .-> I
+  M["UC-13 Jurisdiction pack"] -. configures .-> F
+  N["UC-14 Platform controls"] -. protects .-> C
 ```
 
 ## Actors and scenario catalogue
@@ -48,6 +50,8 @@ flowchart TD
 | UC-10 | Engagement Partner | Open next-year engagement | [Roll forward](./10-roll-forward.md) |
 | UC-11 | Firm Admin | Control team, plans and settings | [Firm administration](./11-firm-administration.md) |
 | UC-12 | Partner/Admin | Reconstruct evidence and decisions | [Evidence and history](./12-evidence-and-audit-history.md) |
+| UC-13 | Partner | Select an approved and date-effective jurisdiction rule pack | [Jurisdiction configuration](./13-configure-jurisdiction.md) |
+| UC-14 | Security Owner | Review controls, evidence, and payment scope | [Assurance evidence review](./14-control-evidence-review.md) |
 
 ## Shared success conditions
 
@@ -57,5 +61,7 @@ flowchart TD
 4. A flag is a **candidate for human review**, not proof of a statutory violation.
 5. Resolution and final sign-off have accountable human actors and durable records.
 6. Retention periods, statutory thresholds, and performance targets are **proposed assumptions** subject to review and testing.
+7. India-only rules are never executed for unsupported jurisdictions; effective dates, approvals and legal references are pinned per run.
+8. Controls protecting the platform are separate from statutory financial audit rules; ISO/SOC 2/PCI references are **not** compliance or certification claims.
 
 For the design behind these scenarios, see the [proposed architecture](../architecture/system-context.md), [detailed specifications](../modules/04-engagements.md), and [illustrative rule catalogue](../reference/statutory-rules.md).

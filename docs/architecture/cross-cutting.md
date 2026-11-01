@@ -6,8 +6,7 @@ sidebar_position: 3
 
 # Cross-Cutting Concerns
 
-These apply to every module and every service; module pages reference back here rather than
-repeating them.
+These proposed controls apply across the platform. Older detailed modules illustrate the India launch case; core infrastructure should be jurisdiction-neutral. See [Jurisdiction Model](./jurisdiction-model.md) and [Assurance Design](./assurance-design.md).
 
 ## Security
 
@@ -19,7 +18,10 @@ repeating them.
 | Tenant isolation | Schema-per-tenant, resolved from the authenticated token, never from a client-supplied header alone |
 | Secrets | Stored in a secrets manager, never in application config or source |
 | Data at rest | Database and object storage encrypted at rest |
-| PII | Client PAN, GST numbers, and financial data are audit-firm data, never used for platform analytics or shared cross-tenant |
+| Sensitive records | Financial documents, tax identifiers (e.g. Indian PAN/GSTIN), PII and audit evidence are isolated client/firm data; no cross-tenant analytics or model training |
+| Operational controls | Privileged MFA, least privilege, access reviews, secure changes, incident response, restore drills and vendor assessments are proposed control objectives |
+| Evidence integrity | Hash source versions; pin rule/config versions; retain append-only decision records with restricted privileged access |
+| Payment boundary | Hosted/tokenized billing and a documented PCI DSS data-flow and third-party responsibility decision; audit uploads are scanned for unexpected sensitive payment data |
 
 ## Idempotency
 
@@ -59,12 +61,12 @@ finding from the same inputs at any later date. See [Rule Engine](../modules/07-
 
 ## Internationalization
 
-Platform UI text is English-only for v1. Currency is always INR. Dates are stored in UTC and
-displayed in IST. No multi-currency, multi-language requirement exists for the target market
-(Indian statutory audit firms).
+The **reusable core** stores timestamps in UTC and handles explicit jurisdiction, locale, fiscal-calendar, timezone and ISO 4217 currency fields. **India pilot defaults** may be INR, April–March, IST and English; these are not hard-coded universal constraints. New languages and country rule packs require future validation. Never silently convert financial amounts in statutory checks.
 
 ## Related pages
 
 - [System Context](./system-context)
 - [Data Model](./data-model)
 - [Non-Functional Requirements](../reference/non-functional)
+- [Jurisdiction Model](./jurisdiction-model.md)
+- [Assurance Design](./assurance-design.md)
