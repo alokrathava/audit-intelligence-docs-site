@@ -4,54 +4,37 @@ title: Roles & Permissions
 sidebar_position: 2
 ---
 
-# Roles & Permissions
+# Actors, Roles & Permissions
 
-Three tenant-scoped roles, plus one cross-tenant platform role. **Canonical v1 authorization** uses an authoritative global membership registry and per-engagement assignments. Platform operator impersonation into private firm books is excluded from v1; see [ADRs](../architecture/decision-records.md). A user's role is assigned per
-tenant in `firm_user_role` — see [Multi-Tenancy](../modules/02-multi-tenancy#data-model) — so the
-same person can hold different roles at different firms.
+This is the **selected logical authorization model** for the case study, not a deployed RBAC service.
 
-## Role summary
+## Role and trust boundaries
 
-| Role | Scope | Typical holder |
-|---|---|---|
-| Admin | Full read/write within one tenant, including billing and settings | Firm owner, IT/ops lead |
-| Partner | Full read/write within assigned engagements, sign-off authority | Engagement partner |
-| Staff | Read/write within assigned engagements, no sign-off/waive authority | Audit associates |
-| Platform Operator | Cross-tenant, platform administration only | Internal platform team |
+| Actor | Scope | Allowed |
+| --- | --- | --- |
+| Firm Admin | One firm | Manage members, policies and billing-related configuration; no automatic authority to issue an auditor's professional conclusion |
+| Engagement Partner | Assigned engagement | Define and approve work, make documented workflow approval decisions |
+| Audit Staff | Assigned engagement | Upload, reconcile, execute candidate checks, investigate and propose resolutions |
+| Client uploader | One expiring intake token | Upload source records only; **no read access** to findings, data or other engagements |
+| Platform operator | Platform metadata | Operate health, billing infrastructure and security metadata; **no impersonation of customer-content users** |
+| Background worker | Scoped job | Read only the firm/engagement objects needed for a named job |
 
-## Permission matrix
+## Canonical enforcement order
 
-| Capability | Admin | Partner | Staff | Platform Operator |
-|---|---|---|---|---|
-| Manage billing / subscription | ✅ | ❌ | ❌ | ❌ (view only) |
-| Manage firm settings | ✅ | Read-only | ❌ | ❌ |
-| Invite / deactivate users | ✅ | ❌ | ❌ | ❌ |
-| Create engagement | ✅ | ✅ | ❌ | ❌ |
-| Assign engagement team | ✅ | ✅ | ❌ | ❌ |
-| Upload documents | ✅ | ✅ | ✅ (if assigned) | ❌ |
-| Generate client intake link | ✅ | ✅ | ✅ (if assigned) | ❌ |
-| Trigger rule run | ✅ | ✅ | ✅ (if assigned) | ❌ |
-| Assign / comment on findings | ✅ | ✅ | ✅ (if assigned) | ❌ |
-| Resolve a finding | ✅ | ✅ | ✅ (if assigned) | ❌ |
-| Waive a Critical finding | ✅ | ✅ | ❌ | ❌ |
-| Sign off an engagement | ✅ | ✅ | ❌ | ❌ |
-| Configure rule thresholds | ✅ | Read-only | ❌ | ❌ |
-| View firm-wide dashboard | ✅ | ✅ | Own engagements only | ❌ |
-| Issue API keys | ✅ | ❌ | ❌ | ❌ |
-| Suspend/reinstate a tenant | ❌ | ❌ | ❌ | ✅ |
-| Impersonate a user | ❌ | ❌ | ❌ | ❌ (not supported in v1) |
-| View another tenant's data | ❌ | ❌ | ❌ | ❌ (never, even for operators) |
+1. Authenticate a real user/service actor or narrowly scoped client-intake token.
+2. Check active membership in the **global firm-membership registry**, never from a forged tenant header.
+3. Check engagement assignment or partner/admin action-specific policy.
+4. Enforce shared-table firm isolation with PostgreSQL RLS under a non-bypass application role.
+5. Enforce action-level separation of duties, version checks, and audit attribution.
 
-## Notes
+A role name alone does not grant another firm's access. The DB has **shared, firm-keyed tables with RLS for the hypothetical pilot**; schema-per-firm is an evaluated alternative.
 
-- **Staff visibility is assignment-scoped**: a Staff user sees only engagements they're on
-  `engagement_team` for — see [Engagements → BR-ENG-04](../modules/04-engagements#business-rules--constraints).
-- **A tenant always retains at least one Admin** — see
-  [Admin & Settings → Edge cases](../modules/13-admin-settings#edge-cases--failure-modes).
-- **A client intake link is not a role** — it's a bearer token scoped to one engagement's upload
-  endpoint only, held by an unauthenticated external party. It never appears in `firm_user_role`
-  and grants no read access. See [Client Intake Portal](../modules/15-client-intake#business-rules--constraints).
-- **Platform Operator never has tenant data read access** — operator tooling operates on tenant
-  metadata (status, health metrics) and security events, never on engagement/transaction/finding
-  content, preserving the isolation guarantee in
-  [Multi-Tenancy → FEAT-MT-005](../modules/02-multi-tenancy#functional-features).
+## Review-specific rules
+
+- Staff may document resolution suggestions but cannot bypass critical/mandatory review gates.
+- Partner workflow approval requires current reviewed procedures, reconciled source evidence and no blockers; it is **not a statutory audit opinion**.
+- A person may hold roles at multiple firms, but each request selects and verifies exactly one firm context.
+- Firms retain at least one authorized administrator.
+- Every role/membership change is attributable and invalidates inappropriate active access; verification must be performed with negative authorization tests.
+
+See [Identity module](../modules/01-auth-identity.md), [sign-off contract](../architecture/signoff-contract.md), [isolation trade-offs](../architecture/alternatives-and-tradeoffs.md).

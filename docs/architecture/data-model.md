@@ -1,72 +1,60 @@
 ---
 id: data-model
-title: Shared Data Model
-sidebar_position: 2
+title: Shared Data Model — Selected Case Study
+sidebar_position: 9
 ---
 
 # Shared Data Model
 
-:::caution Superseded conceptual model
-The single `transaction` entity and tenant-mapping placement here are **legacy sketches**, not the canonical v1 schema. Use [Canonical Domain Model](./domain-model-v2.md), [Architecture Decisions](./decision-records.md), and [Sign-off Contract](./signoff-contract.md) for authoritative requirements.
-:::
+This is the **selected conceptual model**. The detailed [domain model](./domain-model-v2.md) and [sign-off contract](./signoff-contract.md) define invariants; no physical SQL schema has been implemented.
 
 ## Global vs tenant-scoped entities
 
-Two schemas exist per database cluster: one **global** schema shared by every tenant, and one
-**tenant schema per firm**, created at provisioning time.
+| Scope | Entities | Security model |
+| --- | --- | --- |
+| **Global control plane** | `user`, `firm`, `firm_membership`, `session`, proposed `plan`/`subscription` | Server-verified identity and membership |
+| **Firm-private shared PostgreSQL tables** | `client`, `engagement`, `source_file_version`, `dataset_snapshot`, `journal_entry`, `journal_line`, `finding`, `workpaper`, `audit_event` | Explicit `firm_id`, application assignment checks **plus RLS** |
+| **Versioned object storage** | Original uploads, reviewer evidence, generated reports and exports | Owner firm/engagement, versioned keys, hashes, short-lived authorized access |
 
-| Scope | Entities |
-|---|---|
-| Global | `tenant`, `plan`, `subscription`, `invoice`, `payment_method`, `user` (identity only), `api_key` |
-| Per-tenant schema | `engagement`, `client`, `transaction`, `ledger_mapping`, `audit_finding`, `report`, `firm_user_role`, `audit_log` |
-
-A user's login identity is global (one email, one password, one MFA enrollment); their
-role/membership is tenant-scoped, since the same person can belong to multiple firms (e.g. a
-contractor auditor working across firms) — see
-[Auth & Identity](../modules/01-auth-identity) and [Multi-Tenancy](../modules/02-multi-tenancy).
+The previous **schema-per-tenant** model is now a documented *alternative*, not the chosen pilot approach. See [ADR-004](./alternatives-and-tradeoffs.md).
 
 ## Entity relationship diagram
 
 ```mermaid
 erDiagram
-    TENANT ||--o{ SUBSCRIPTION : has
-    TENANT ||--o{ FIRM_USER_ROLE : has
-    USER ||--o{ FIRM_USER_ROLE : holds
-    PLAN ||--o{ SUBSCRIPTION : defines
-    SUBSCRIPTION ||--o{ INVOICE : generates
-    TENANT ||--o{ CLIENT : owns
-    CLIENT ||--o{ ENGAGEMENT : has
-    ENGAGEMENT ||--o{ UPLOADED_FILE : contains
-    UPLOADED_FILE ||--o{ TRANSACTION : parses_into
-    TRANSACTION }o--o{ LEDGER_MAPPING : normalized_by
-    ENGAGEMENT ||--o{ AUDIT_FINDING : produces
-    AUDIT_FINDING ||--o| REPORT : generates
-    AUDIT_FINDING }o--|| USER : assigned_to
-    ENGAGEMENT ||--o{ AUDIT_LOG : records
+  FIRM ||--o{ FIRM_MEMBERSHIP : grants
+  USER ||--o{ FIRM_MEMBERSHIP : holds
+  FIRM ||--o{ CLIENT : serves
+  CLIENT ||--o{ ENGAGEMENT : has
+  ENGAGEMENT ||--o{ AUDIT_PROCEDURE : plans
+  ENGAGEMENT ||--o{ SOURCE_FILE_VERSION : receives
+  SOURCE_FILE_VERSION ||--o{ DATASET_SNAPSHOT : derives
+  DATASET_SNAPSHOT ||--o{ JOURNAL_ENTRY : contains
+  JOURNAL_ENTRY ||--o{ JOURNAL_LINE : contains
+  DATASET_SNAPSHOT ||--o{ RECONCILIATION : validates
+  ENGAGEMENT ||--o{ RULE_RUN : executes
+  RULE_RUN ||--o{ CHECK_RESULT : contains
+  CHECK_RESULT ||--o{ FINDING : flags
+  FINDING ||--o{ REVIEW_ACTION : documents
+  ENGAGEMENT ||--o{ APPROVAL : governs
 ```
 
 ## Core entity reference
 
-| Entity | Key fields | Notes |
-|---|---|---|
-| `tenant` | `id`, `firm_name`, `schema_name`, `status`, `created_at` | `status`: provisioning, active, suspended, offboarding |
-| `user` | `id`, `email`, `password_hash`, `mfa_enabled`, `status` | Global identity, see [Auth](../modules/01-auth-identity) |
-| `firm_user_role` | `tenant_id`, `user_id`, `role` | Composite key; a user row can exist under many tenants |
-| `plan` | `id`, `name`, `seat_limit`, `engagement_limit`, `monthly_price` | See [Billing](../modules/03-subscriptions-billing) |
-| `subscription` | `id`, `tenant_id`, `plan_id`, `status`, `current_period_end` | |
-| `client` | `id`, `tenant_id`, `name`, `pan`, `industry` | |
-| `engagement` | `id`, `client_id`, `financial_year`, `status`, `partner_id` | See [Engagements](../modules/04-engagements) |
-| `uploaded_file` | `id`, `engagement_id`, `file_type`, `storage_path`, `status` | See [Ingestion](../modules/05-document-ingestion) |
-| `transaction` | `id`, `engagement_id`, `voucher_id`, `ledger_name`, `standard_category`, `debit_amount`, `credit_amount`, `transaction_date` | Central fact table |
-| `ledger_mapping` | `id`, `tenant_id`, `raw_name`, `standard_category`, `match_method` | See [Normalization](../modules/06-ledger-normalization) |
-| `audit_finding` | `id`, `engagement_id`, `rule_id`, `severity`, `status`, `assignee_id`, `report_path` | See [Findings](../modules/08-findings-workflow) |
-| `report` | `id`, `finding_id`, `file_path`, `generated_at` | |
-| `audit_log` | `id`, `tenant_id`, `actor_id`, `action`, `entity_type`, `entity_id`, `occurred_at` | Append-only, see [Audit Trail](../modules/12-audit-trail-compliance) |
+| Entity | Important fields |
+| --- | --- |
+| `engagement` | `id, firm_id, client_id, period_start, period_end, jurisdiction, framework, revision, status` |
+| `source_file_version` | `id, firm_id, engagement_id, source_system, content_hash, object_version, supersedes_id` |
+| `dataset_snapshot` | `id, firm_id, source_version_ids, parser_version, scope, accepted_count, rejected_count, reconciliation_status` |
+| `journal_entry/line` | `entry_id, account_id, date, debit, credit, currency, source_ref` |
+| `reconciliation` | `dataset_id, expected_totals, actual_totals, reviewer_id, decision, evidence_ids` |
+| `rule_run/check_result` | `snapshot_id, pack_version, config_version, coverage_status, diagnostic, candidate_refs` |
+| `finding/review_action` | `rule_result_id, original_severity, disposition, actor_id, evidence_ids` |
+| `approval` | `engagement_revision, approver_id, evidence_manifest_id, decision, occurred_at` |
+| `audit_event/outbox_event` | `event_id, firm_id, aggregate_ref, revision, actor_id, payload_ref, committed_at` |
 
 ## Tenant isolation model
 
-Every tenant-scoped query executes against `SET search_path = tenant_<schema_name>` resolved from
-the authenticated request's `X-Tenant-ID`. No tenant-scoped table carries a `tenant_id` column as
-its *only* isolation boundary — schema separation means a missing `WHERE tenant_id = ?` clause
-fails closed (wrong schema has no matching table), not open. Full detail in
-[Multi-Tenancy → DFD Level 3](../modules/02-multi-tenancy#dfd-level-3--request--tenant-resolution).
+For the **hypothetical pilot**, use shared PostgreSQL tables with firm keys, RLS policies, application engagement-membership checks and a per-transaction server-verified tenant context. Do not rely solely on RLS, on `X-Tenant-ID` headers, or on guess-resistant resource IDs. The application role must not bypass RLS, and policies must be tested against cross-tenant joins and background jobs.
+
+The design is not a certification or proof that the controls operate. See [Security Design](./assurance-design.md) and [Isolation Trade-offs](./alternatives-and-tradeoffs.md).

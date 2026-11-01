@@ -36,6 +36,9 @@ Instead of independent feature descriptions, the documentation follows one illus
 | [Thursday — The Review Gate](docs/story/04-the-review-gate.md) | What should block an incomplete or stale sign-off? |
 | [Friday — Proving What Happened](docs/story/05-trust-and-evidence.md) | Can every decision and source version be reconstructed? |
 | [Design Reveal](docs/story/06-from-story-to-system.md) | How do those requirements shape the solution architecture? |
+| [Epilogue — The Decision](docs/story/07-the-resolution.md) | How does the complete case conclude? |
+
+Explore the [worked example](docs/reference/worked-example.md), [architecture alternatives](docs/architecture/alternatives-and-tradeoffs.md), [capacity exercise](docs/architecture/capacity-model.md), and [domain validation register](docs/reference/domain-validation-register.md).
 
 For the engineering details, see the [solution architecture](docs/architecture/solution-architecture.md), [domain model](docs/architecture/domain-model-v2.md), [sign-off contract](docs/architecture/signoff-contract.md), [architecture decisions](docs/architecture/decision-records.md), and [requirements traceability matrix](docs/reference/requirements-traceability.md).
 

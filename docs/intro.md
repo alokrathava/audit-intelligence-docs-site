@@ -27,8 +27,9 @@ That is the problem this design attempts to solve.
 | **Wednesday** | A deterministic check flags an unusual entry | How do we avoid treating a flag as a legal conclusion? | [Rules, evidence and investigation](./story/03-findings-not-verdicts.md) |
 | **Thursday** | A partner reviews the work | Can an unfinished or stale run pass sign-off? | [Fail-closed review gate](./story/04-the-review-gate.md) |
 | **Friday** | Someone asks for a complete record of what happened | Can the firm reconstruct every meaningful decision? | [Security, evidence and event integrity](./story/05-trust-and-evidence.md) |
+| **Epilogue** | The team reconciles corrections and the partner decides | What did the proposed design achieve? | [The resolution](./story/07-the-resolution.md) |
 
-**[Begin the story →](./story/01-the-engagement.md)**
+**[Begin the story →](./story/01-the-engagement.md)** · [Read the final decision](./story/07-the-resolution.md)
 
 ## The proposed solution
 

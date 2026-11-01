@@ -6,7 +6,7 @@ sidebar_position: 1
 
 # Canonical Solution Architecture (proposed)
 
-**Architecture status:** Target for an India-first pilot; no running backend is present in this repository. This document supersedes the older independent-microservice deployment suggestion in [System Context](./system-context.md) for **v1**.
+**Architecture status:** Selected hypothetical pilot architecture; no running backend is present. Components are logical modules within one backend, with separate workers. See [trade-offs](./alternatives-and-tradeoffs.md), [capacity assumptions](./capacity-model.md) and [system context](./system-context.md).
 
 ## Requirements driving the choice
 
@@ -81,7 +81,7 @@ A reviewer-authorized exception to population reconciliation must be explicitly 
 
 ## Security and governance
 
-A firm is the tenant. Global user identity and **global firm-membership registry** authorize access; firm-private financial records are tenant-bound. For an initial pilot, a shared database with tenant-scoped data and automated cross-tenant tests may be easier to operate than provisioning one schema per firm. **Final isolation choice is an ADR**, not an implicit guarantee that schema selection alone makes access safe.
+A firm is the tenant. Global user identity and **global firm-membership registry** authorize access; firm-private financial records are tenant-bound. For the illustrative pilot, **shared PostgreSQL tables with firm identifiers, RLS and application assignment checks** are selected. This requires tested policies, non-bypass roles, and scoped request context—not tenant headers alone. Alternatives are in the [tenant isolation ADR](./alternatives-and-tradeoffs.md).
 
 If schema-per-tenant PostgreSQL is selected, set and reset `search_path` within a transaction and test pooled-connection isolation. Never derive access from `X-Tenant-ID` alone.
 

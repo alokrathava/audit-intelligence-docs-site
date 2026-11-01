@@ -62,4 +62,8 @@ No autonomous financial-statement opinion, no universal legal rule engine, no re
 
 Read the [solution architecture](../architecture/solution-architecture.md), [domain model](../architecture/domain-model-v2.md), [decision records](../architecture/decision-records.md), and [requirements traceability](../reference/requirements-traceability.md).
 
+The decision draws on [alternatives and trade-offs](../architecture/alternatives-and-tradeoffs.md), an [illustrative capacity model](../architecture/capacity-model.md), a [worked example](../reference/worked-example.md) and an [unverified assumption register](../reference/domain-validation-register.md).
+
 **The intended outcome is better evidence and decisions—not a claim that software has conducted an audit on behalf of a qualified professional.**
+
+[Continue to the epilogue](./07-the-resolution.md).

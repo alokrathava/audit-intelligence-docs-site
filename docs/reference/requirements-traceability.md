@@ -26,6 +26,8 @@ This matrix links the [fictional engagement story](../intro.md) to testable syst
 | BR-14 | Compliance terms mistaken for certification | Control ownership and evidence, correct PCI scoping | Planned control not represented as certified or attested |
 | BR-15 | Pricing/quota counts are unreliable | Idempotent usage events and fit-for-format units | Duplicate parse event cannot double-bill |
 
+The [worked example](./worked-example.md) carries one engagement to its final review; the [capacity model](../architecture/capacity-model.md) documents hypothetical sizing assumptions, and the [domain validation register](./domain-validation-register.md) separates facts from unknowns.
+
 ## Example test dataset
 
 Use wholly fictitious sample data with an explicitly specified export manifest containing 100,000 expected entries, a 98,600-row truncated sample, a corrected complete export, a journal-entry candidate and a missing jurisdiction-specific supporting file. Include trial-balance control amounts and expected outcomes.

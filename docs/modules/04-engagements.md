@@ -3,168 +3,79 @@ id: 04-engagements
 title: "04 — Engagements"
 sidebar_position: 4
 ---
-
 # Engagements
 
-:::caution Earlier module sketch — reconcile before implementation
-This page documents an earlier India-first design. The [canonical solution architecture](../architecture/solution-architecture.md), [domain model](../architecture/domain-model-v2.md), [review contract](../architecture/signoff-contract.md), and [decision records](../architecture/decision-records.md) override contradictory details in this module. It is a **reference use case**, not executable functionality.
-:::
+> **Case-study contract.** This is the selected proposed *logical module* of one modular backend, not a deployed service. Source-specific laws and unverified performance assumptions are not implementation claims.
 
 ## Purpose
 
-Owns the client master and the audit engagement lifecycle — the organizing unit that every
-uploaded file, transaction, and finding hangs off. An engagement is one client audited for one
-financial year; this module governs its states from creation through sign-off and archival.
+Define client scope, reporting period, planned audit procedures, owners and evidence requirements.
 
 ## Actors & permissions
 
-| Actor | Interacts with this module as |
-|---|---|
-| Engagement Partner | Creates engagements, assigns team, approves sign-off |
-| Audit Staff | Works within assigned engagements |
-| Firm Admin | Manages client master, views all engagements firm-wide |
+Actors are the responsible firm user, engagement reviewer, authorized client uploader, or scoped background worker as applicable. Every firm-private operation requires verified membership and engagement authorization. See [Roles & Permissions](../reference/roles-permissions.md).
 
 ## Functional features
 
-| ID | Feature | Description | Acceptance criteria |
-|---|---|---|---|
-| FEAT-ENG-001 | Client master | Create/edit client records (name, PAN, industry) | PAN format validated; duplicate PAN within a tenant flagged, not silently allowed |
-| FEAT-ENG-002 | Engagement creation | Create an engagement for a client + financial year | Blocked if an engagement for the same client+FY already exists, unless explicitly re-opened |
-| FEAT-ENG-003 | Engagement lifecycle states | Draft → Fieldwork → Under Review → Signed Off → Archived | Each transition is a distinct API action, not a free-text status field |
-| FEAT-ENG-004 | Team assignment | Assign staff and a reviewing partner to an engagement | At least one partner required before moving out of Draft |
-| FEAT-ENG-005 | Rollforward from prior year | New engagement pre-populated from prior year's ledger mappings | Ledger mapping table copied; transactions and findings are not carried over |
-| FEAT-ENG-006 | Sign-off lock | Signed-off engagement becomes read-only | Any write attempt (upload, finding edit) after sign-off returns 409 |
-| FEAT-ENG-007 | Re-open after sign-off | Partner explicitly re-opens a signed-off engagement | Requires reason logged; reverts to Under Review state |
-| FEAT-ENG-008 | Archival | Old engagements archived after a retention period | Archived engagements are read-only and excluded from default list views |
-| FEAT-ENG-009 | Engagement dashboard | Per-engagement summary of upload/finding status | Reflects live state, no manual refresh needed |
-| FEAT-ENG-010 | Cross-engagement search | Firm-wide search across clients and engagements | Scoped to tenant; respects staff's assigned-engagement visibility |
+| Requirement | Selected case-study behavior |
+| --- | --- |
+| Ownership | Engagement revision; required procedures; reviewer independence; source dependencies; immutable approval manifest. |
+| Workflow | Review gate checks current approved evidence, procedure coverage and blocking issues atomically. |
+| Boundary | One completed rule run or absence of Critical findings is never sufficient for sign-off. |
 
 ## Business rules & constraints
 
-- **BR-ENG-01 (revised)**: An engagement may enter review only when required **planned procedures and source reconciliation evidence** are present or appropriately documented as exceptions. A single completed rule run is insufficient; see [Sign-off Contract](../architecture/signoff-contract.md).
-- **BR-ENG-02 (revised)**: Sign-off requires the complete **atomic readiness contract** (current revision, reconciled prerequisites, reviewed procedures, latest applicable runs, no unresolved blocking findings/notes and authorized approver). The Critical-severity condition alone is insufficient; see [Sign-off Contract](../architecture/signoff-contract.md).
-- **BR-ENG-03 (revised)**: Store explicit engagement period start/end, reporting framework and jurisdiction/calendar policy. India may use April–March, but the reusable core must not assume an Indian fiscal year.
-- **BR-ENG-04**: Staff without an explicit assignment to an engagement cannot view it, even within
-  the same tenant, unless they hold the Firm Admin role.
+- Preserve immutable evidence and document every material human decision.
+- Reject unauthorized access, stale revisions and missing prerequisites rather than silently defaulting to success.
+- Current design is described in [Solution Architecture](../architecture/solution-architecture.md), [Domain Model](../architecture/domain-model-v2.md) and [Sign-off Contract](../architecture/signoff-contract.md).
 
 ## Data model
 
-| Entity | Key fields | Scope |
-|---|---|---|
-| `client` | `id`, `tenant_id`, `name`, `pan`, `industry` | Tenant |
-| `engagement` | `id`, `client_id`, `financial_year_start`, `status`, `partner_id` | Tenant |
-| `engagement_team` | `engagement_id`, `user_id`, `role_on_engagement` | Tenant |
-| `engagement_state_log` | `id`, `engagement_id`, `from_state`, `to_state`, `actor_id`, `occurred_at` | Tenant |
+Authoritative concepts and entity ownership are documented in the [canonical domain model](../architecture/domain-model-v2.md) and [shared-data design](../architecture/data-model.md). This module does not introduce a contradictory independent schema.
 
 ## API surface
 
-| Method | Path | Purpose | Auth scope |
-|---|---|---|---|
-| POST | `/clients` | Create client | Admin / Partner |
-| GET | `/clients` | List clients | Any assigned user |
-| POST | `/engagements` | Create engagement | Admin / Partner |
-| GET | `/engagements/{id}` | Engagement detail + dashboard | Assigned user |
-| POST | `/engagements/{id}/transition` | Move to next lifecycle state | Assigned user (state-dependent) |
-| POST | `/engagements/{id}/team` | Assign/remove team members | Partner |
-| POST | `/engagements/{id}/rollforward` | Create next-year engagement from this one | Partner |
-| POST | `/engagements/{id}/reopen` | Re-open a signed-off engagement | Partner |
+Any future API must require verified firm/engagement authorization, typed versioned requests, idempotent mutations and explicit error codes. Exact endpoints are **not implemented** or finalized by this use-case study.
 
 ## DFD Level 0
 
 ```mermaid
 flowchart LR
-    Partner(["Engagement Partner"])
-    Eng[["Engagements Module"]]
-    EngDB[("client / engagement<br/>store")]
-    Ing[["Ingestion Module"]]
-    Rules[["Rule Engine Module"]]
-
-    Partner -- "create client, create/transition<br/>engagement, assign team" --> Eng
-    Eng -- "engagement dashboard" --> Partner
-    Eng <--> EngDB
-    Ing -- "uploads scoped to<br/>engagement_id" --> Eng
-    Rules -- "rule-run status<br/>scoped to engagement_id" --> Eng
-```
-
-## DFD Level 1
-
-```mermaid
-flowchart TB
-    Client["Client Master"]
-    Create["Engagement Creation<br/>& Rollforward"]
-    State["Lifecycle State<br/>Machine"]
-    Team["Team Assignment"]
-    Dash["Engagement<br/>Dashboard Aggregation"]
-    DB[("engagement store")]
-
-    Client <--> DB
-    Create <--> DB
-    State <--> DB
-    Team <--> DB
-    Dash <--> DB
-```
-
-## DFD Level 2 — Lifecycle State Machine
-
-```mermaid
-flowchart LR
-    Draft["Draft"]
-    Field["Fieldwork"]
-    Review["Under Review"]
-    Signed["Signed Off"]
-    Arch["Archived"]
-
-    Draft -->|"partner assigned"| Field
-    Field -->|"rule run completed"| Review
-    Review -->|"no critical findings open<br/>+ partner approval"| Signed
-    Review -->|"reopen not applicable"| Field
-    Signed -->|"explicit reopen"| Review
-    Signed -->|"retention period elapsed"| Arch
-```
-
-## DFD Level 2 — Rollforward
-
-```mermaid
-flowchart TB
-    In[["Rollforward requested<br/>from engagement_prior"]]
-    New["Create engagement_new<br/>status=Draft, FY = prior FY + 1"]
-    Copy["Copy ledger_mapping rows<br/>from prior engagement"]
-    Skip["Do NOT copy transactions,<br/>findings, or reports"]
-    Link["Set engagement_new.rolled_from<br/>= engagement_prior.id"]
-
-    In --> New --> Copy --> Skip --> Link
-```
-
-## DFD Level 3 — Sign-Off Gate Check
-
-```mermaid
-flowchart TB
-    Req[["Transition request:<br/>Under Review → Signed Off"]]
-    Findings{"Any finding with<br/>severity=critical AND<br/>status≠resolved?"}
-    Block["409 — return list of<br/>blocking finding IDs"]
-    RuleRun{"At least one<br/>rules.completed event<br/>for this engagement?"}
-    NoRun["409 — engagement has<br/>never had a rule run"]
-    Approve["status = Signed Off<br/>lock all writes<br/>log engagement_state_log entry"]
-
-    Req --> Findings
-    Findings -->|yes| Block
-    Findings -->|no| RuleRun
-    RuleRun -->|no| NoRun
-    RuleRun -->|yes| Approve
+  Actor["Authorized actor / worker"] --> App["Engagement Planning & Review"]
+  App --> DB[("Firm-scoped PostgreSQL")]
+  App --> Audit["Atomic audit record + outbox"]
 ```
 
 ## Edge cases & failure modes
 
-| Condition | System behavior |
-|---|---|
-| Upload attempted on a Signed Off engagement | 409, with message directing to reopen |
-| Rollforward requested from a Draft (never-run) engagement | Allowed, but the copied `ledger_mapping` table is empty — no error |
-| Two partners transition the same engagement simultaneously | Optimistic concurrency check on `engagement.status`; second request gets 409 |
-| Client PAN changed after engagements exist | Allowed with a warning; historical engagements keep the client link, not a PAN snapshot |
+- **Unauthorized actor:** deny without exposing firm-private metadata.
+- **Missing required input or stale version:** return a reviewable incomplete/error status; do not claim completion.
+- **Worker retry:** logical idempotency ensures no duplicate evidence, findings or usage charges.
 
 ## Out of scope
 
-- Multi-entity consolidated engagements (group audits spanning several clients as one engagement)
-  — each engagement is single-client for v1.
-- Engagement budgeting/time-tracking — that's practice-management territory, not this platform's
-  scope.
+One completed rule run or absence of Critical findings is never sufficient for sign-off.
+
+## Cross references
+
+[The end-to-end case](../reference/worked-example.md) · [Architecture alternatives](../architecture/alternatives-and-tradeoffs.md) · [Domain assumptions](../reference/domain-validation-register.md)
+
+### DFD Level 0
+
+The earlier detailed diagram is archived conceptually in the [architecture alternatives](../architecture/alternatives-and-tradeoffs.md). The selected DFD Level 0 and canonical documents govern this case study.
+
+### DFD Level 1
+
+The earlier detailed diagram is archived conceptually in the [architecture alternatives](../architecture/alternatives-and-tradeoffs.md). The selected DFD Level 0 and canonical documents govern this case study.
+
+### DFD Level 2 — Lifecycle State Machine
+
+The earlier detailed diagram is archived conceptually in the [architecture alternatives](../architecture/alternatives-and-tradeoffs.md). The selected DFD Level 0 and canonical documents govern this case study.
+
+### DFD Level 2 — Rollforward
+
+The earlier detailed diagram is archived conceptually in the [architecture alternatives](../architecture/alternatives-and-tradeoffs.md). The selected DFD Level 0 and canonical documents govern this case study.
+
+### DFD Level 3 — Sign-Off Gate Check
+
+The earlier detailed diagram is archived conceptually in the [architecture alternatives](../architecture/alternatives-and-tradeoffs.md). The selected DFD Level 0 and canonical documents govern this case study.

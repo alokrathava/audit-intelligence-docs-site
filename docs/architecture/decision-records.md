@@ -1,44 +1,42 @@
 ---
 id: decision-records
-title: Architecture Decisions & Open Questions
+title: Architecture Decision Records — Selected Design
 sidebar_position: 4
 ---
 
-# Architecture Decisions
+# Architecture Decisions for Case Study #01
 
-These decisions describe the **proposed first implementation**, not deployed components. They intentionally supersede conflicting older module sketches; the implementation should not mix incompatible choices.
+**Status:** Selected *for this proposed case study*, not implemented or benchmarked. One architecture now governs the narrative, module contracts and diagrams.
 
-| ID | Decision | Why | Status |
+| ADR | Selected design | Main rationale | Reverse the decision when |
 | --- | --- | --- | --- |
-| ADR-001 | Focus v1 on financial-audit evidence and analytics, not full automated audit | Test one real workflow before promising full audit coverage | Proposed |
-| ADR-002 | Modular monolith + background workers, not 12 independently deployed services | Reduce distributed consistency and operational overhead | Proposed |
-| ADR-003 | Global identity/membership registry; explicit per-engagement access | One authoritative membership source, enforce on every request | Proposed |
-| ADR-004 | Tenant isolation to be decided by threat model and operations; schema-per-tenant is **not** automatically fail-closed | Avoid misleading guarantees from `search_path`, pooled connections or SQL permissions | Open |
-| ADR-005 | Typed accounting records + versioned source snapshot, not one universal transaction entity | Prevent accounting/tax semantics from being conflated | Proposed |
-| ADR-006 | Reconciling source population is distinct from parsing | Valid import can still omit records | Proposed |
-| ADR-007 | Rule engine owns candidate creation; workpaper module owns human disposition | Clear data ownership and idempotent events | Proposed |
-| ADR-008 | Atomic mutation + audit record + transactional outbox | A bus subscriber alone cannot guarantee a complete audit trail | Proposed |
-| ADR-009 | Sign-off checks current revision, evidence coverage and required procedures | No false clearance from zero findings or stale runs | Proposed |
-| ADR-010 | India is first reviewed jurisdiction pack, not global hard-coded logic | Retain focused launch plan and extensibility | Proposed |
-| ADR-011 | No support impersonation of customer financial content in v1 | Preserve strong confidentiality boundary | Proposed |
-| ADR-012 | Hosted payment collection; independently scope PCI DSS | Financial records and cardholder data are different obligations | Proposed |
+| 001 | Financial-data validation, review and evidence as initial product boundary | Clear, testable audit-team problem without promising an autonomous audit | Domain experts define a broader validated workflow |
+| 002 | **Modular monolith with background workers** | Simpler cross-module transactions and operations | Independent deployments/scaling produce measured gains |
+| 003 | Global identity and firm-membership registry; engagement-level authorization | One membership source, explicit least privilege | Requirements for federated identities demand a new model |
+| 004 | **Shared PostgreSQL data with tenant IDs and RLS** for illustrative pilot | Single migration path, DB policy as defense in depth | Residency or contractual isolation requires schema/db split |
+| 005 | Typed journal, invoice and tax entities with immutable source snapshots | Avoid incompatible accounting meanings in one row | A reviewed common representation is proven safe for a specific record type |
+| 006 | Source-population reconciliation **before dependent checks** | A parsed export may be incomplete | Source-native guarantees can be independently verified |
+| 007 | Rule engine owns candidate persistence; human-review module owns disposition | No duplicated finding writers; clearer lifecycle | Domain boundaries materially change |
+| 008 | Business mutation, audit record and transactional outbox **commit atomically** | Prevent lost event-history gaps and duplicate replay effects | A proven equivalent consistency contract exists |
+| 009 | Revision-pinned, fail-closed partner approval | Cannot approve stale, incomplete or unreviewed work | Qualified auditors approve a documented alternative methodology |
+| 010 | India-first *reviewed* rule packs; globally reusable workflow | Start narrow without hard-coding local law into platform | A second jurisdiction pack is independently validated |
+| 011 | No platform support impersonation of client financial content | Preserve confidentiality and least privilege | Formal support threat model, consent and controls approved |
+| 012 | Hosted payment collection, scope-specific PCI assessment | Minimize card data touching product infrastructure | Actual payment flows/merchant requirements change |
 
-## Conflicts in legacy module text to resolve
+All decisions assume a **publication and hypothetical architecture**, not a committed company roadmap. Detailed alternatives, costs and reversal conditions: [Architecture Trade-offs](./alternatives-and-tradeoffs.md). Unverified domain claims: [Validation Register](../reference/domain-validation-register.md).
 
-- [Legacy system context](./system-context.md) models independent services; **[canonical architecture](./solution-architecture.md)** proposes one deployable backend for v1.
-- [Multi-Tenancy](../modules/02-multi-tenancy.md) places membership globally; [Legacy Data Model](./data-model.md) places it per tenant. **ADR-003 chooses one global membership registry.**
-- The [Auth module](../modules/01-auth-identity.md) offers support impersonation, while the permissions reference forbids cross-tenant data access. **ADR-011 removes private-content impersonation for v1.**
-- The [Rule Engine](../modules/07-rule-engine.md) and [Findings Workflow](../modules/08-findings-workflow.md) both imply candidate creation. **ADR-007 assigns that to Rule Engine.**
-- Indian reporting calendars and INR appear in detailed modules. Treat them as **India pack examples**, not universal data constraints.
-- The legacy sign-off gate considers completed rules and Critical findings. **[Sign-off contract](./signoff-contract.md)** requires procedure coverage, current evidence and reviewer approval.
+## Resolution of earlier contradictions
 
-## Open decisions that require auditor/business validation
+- No separate ingestion, identity, findings or billing **microservice deployments** in the selected design. They remain *logical modules* of one backend; parsing/checks/reporting use workers.
+- Firm membership is **global** and authorization is checked server-side; firm-private records are **tenant-scoped shared tables with RLS**. The legacy schema-per-tenant approach is an **evaluated alternative**, not a concurrent requirement.
+- A workflow sign-off requires current approved evidence and procedures, not simply one completed rule run or zero Critical findings.
+- Rule execution **owns** initial candidate finding creation; other modules cannot recreate findings by consuming events.
+- Source record types are distinct; the universal `transaction` table is not authoritative.
+- Legal thresholds are never replaced by tenant-configured investigation thresholds.
+- Immutable evidence and outbox event delivery require well-defined privileges and replay handling.
 
-- How will source-system completeness be evidenced for each export?
-- Which user role may approve limited-population exceptions without presenting a complete result?
-- What constitutes sufficient audit documentation for the narrow pilot?
-- Which jurisdictional checks and legal exceptions can be reviewed/approved by qualified auditors?
-- Which tenant isolation strategy fits contractual/regulatory restrictions and actual operating scale?
-- What metrics demonstrate reduction in audit rework or review time?
+## Open decisions
 
-See [requirements matrix](../reference/requirements-traceability.md).
+The exact audit procedure methodology, source export/control availability, qualified validation of India-specific rules, customer-specific residency and retention requirements, and measured production SLOs are **not known**. We present these as open questions rather than contradictory implementations.
+
+See [solution architecture](./solution-architecture.md), [review contract](./signoff-contract.md), [capacity model](./capacity-model.md) and [worked example](../reference/worked-example.md).
