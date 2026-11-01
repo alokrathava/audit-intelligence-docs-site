@@ -1,5 +1,7 @@
 # Audit Intelligence Platform — Certification Program
 
+**Future go-to-market idea, not a current or assessed certification program.** Do not award or imply professional qualifications from a proposed software workflow. Pilot usability and domain validation take priority.
+
 Not part of the build spec in `docs/`. This is a go-to-market artifact: a free certification that
 turns the product documentation into an adoption channel among CAs and their articles, who rotate
 through firms every ~3 years and carry tooling habits with them.
@@ -17,7 +19,7 @@ never drifts from the spec:
 
 | Track | Source pages | Covers |
 |---|---|---|
-| Platform fundamentals | `docs/architecture/*`, `docs/reference/glossary.md` | Tenancy model, service topology, determinism guarantee |
+| Platform fundamentals | `docs/architecture/*`, `docs/architecture/glossary.md` | Tenancy model, service topology, determinism guarantee |
 | Engagement lifecycle | `docs/modules/04-engagements.md` | Draft → Signed Off states, sign-off gate, rollforward |
 | Data intake & normalization | `docs/modules/05-document-ingestion.md`, `06-ledger-normalization.md`, `15-client-intake.md` | Upload formats, rejection handling, taxonomy mapping, client intake links |
 | Statutory rule engine | `docs/modules/07-rule-engine.md`, `docs/reference/statutory-rules.md` | The five rules, threshold bounds, determinism |

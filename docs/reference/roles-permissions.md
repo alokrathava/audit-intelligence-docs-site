@@ -6,7 +6,7 @@ sidebar_position: 2
 
 # Roles & Permissions
 
-Three tenant-scoped roles, plus one cross-tenant platform role. A user's role is assigned per
+Three tenant-scoped roles, plus one cross-tenant platform role. **Canonical v1 authorization** uses an authoritative global membership registry and per-engagement assignments. Platform operator impersonation into private firm books is excluded from v1; see [ADRs](../architecture/decision-records.md). A user's role is assigned per
 tenant in `firm_user_role` — see [Multi-Tenancy](../modules/02-multi-tenancy#data-model) — so the
 same person can hold different roles at different firms.
 
@@ -39,7 +39,7 @@ same person can hold different roles at different firms.
 | View firm-wide dashboard | ✅ | ✅ | Own engagements only | ❌ |
 | Issue API keys | ✅ | ❌ | ❌ | ❌ |
 | Suspend/reinstate a tenant | ❌ | ❌ | ❌ | ✅ |
-| Impersonate a user | ❌ | ❌ | ❌ | ✅ (logged) |
+| Impersonate a user | ❌ | ❌ | ❌ | ❌ (not supported in v1) |
 | View another tenant's data | ❌ | ❌ | ❌ | ❌ (never, even for operators) |
 
 ## Notes

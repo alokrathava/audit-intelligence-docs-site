@@ -1,40 +1,47 @@
-# Audit Intelligence System — Financial Audit Use-Case Study
+# Audit Intelligence — A Financial Audit System Design Case Study
 
-> **Proposed design, not a deployed, certified or independently attested product.**
+> **Status:** Architecture and use-case proposal. This repository contains a Docusaurus documentation site, **not** a deployed audit product. All firm/client names, events and figures in the story are fictional.
 
-## Direction: global-ready financial auditing, India-first delivery
+## The question that started the design
 
-Audit Intelligence proposes a reusable **financial audit workflow platform**: create engagements, collect digital evidence, run reproducible exception checks, document reviewer decisions, prepare query letters and obtain accountable partner sign-off.
+A firm receives a client's accounting exports. The files import successfully. A rules engine reports zero serious exceptions.
 
-**India is the first illustrative jurisdiction**, with Tally, GSTR-2B and Indian statutory checks. Core workflow concepts should not depend on India's fiscal calendar, INR, GST or local retention assumptions. Jurisdiction-specific laws, reporting periods, data formats and audit criteria belong in **versioned, reviewed rule packs**. Other country packs are proposed future work, not supported today.
+**Can the partner sign off?**
 
-The platform **assists qualified auditors**: a flagged record is not an audit opinion, a fraud verdict or an established statutory violation.
+Not necessarily. The files may be incomplete, some checks may not have run, and there may be no documented audit procedures. That tension drives this case study: **a clean rule result is not the same as sufficient, appropriate audit evidence.**
 
-## Where to read
+## Read it as a story
 
-- [Use-case overview](docs/intro.md)
-- [14 actor-based use cases](docs/use-cases/index.md)
-- [Jurisdiction and rule-pack architecture](docs/architecture/jurisdiction-model.md)
-- [Security and assurance controls](docs/architecture/assurance-design.md)
-- [Framework applicability: ISO 27001/27002, SOC 2, PCI DSS, ISA](docs/reference/assurance-frameworks.md)
-- [India-specific illustrative rule catalogue](docs/reference/statutory-rules.md)
+Start with **[The Aster engagement](docs/intro.md)**, an illustrative week at a fictional audit firm.
 
-## Assurance principles
+1. [Monday — an engagement begins](docs/story/01-the-engagement.md)
+2. [Tuesday — the missing records](docs/story/02-the-missing-records.md)
+3. [Wednesday — a finding is a question](docs/story/03-findings-not-verdicts.md)
+4. [Thursday — the review gate](docs/story/04-the-review-gate.md)
+5. [Friday — proving what happened](docs/story/05-trust-and-evidence.md)
+6. [The architecture behind the story](docs/story/06-from-story-to-system.md)
 
-Consider ISO/IEC 27001:2022, ISO/IEC 27002:2022 and AICPA SOC 2 Trust Services Criteria when designing platform security governance and evidence. Assess PCI DSS v4.0.1 **only against actual payment-account data flows and responsibilities**; financial ledger data alone does not establish PCI scope. Independent certifications, SOC 2 reports and PCI assessments require implemented controls and appropriate examination. This documentation makes **no compliance claim**.
+## System design and requirements
 
-## Boundaries
+- [Proposed solution architecture](docs/architecture/solution-architecture.md)
+- [Canonical data model and ownership](docs/architecture/domain-model-v2.md)
+- [Sign-off and processing invariants](docs/architecture/signoff-contract.md)
+- [Architecture decision records](docs/architecture/decision-records.md)
+- [Requirements and acceptance matrix](docs/reference/requirements-traceability.md)
+- [Use cases](docs/use-cases/index.md) and [supporting module specifications](docs/modules/04-engagements.md)
 
-V1 focuses on **financial audit workflows**, not all management-system, environmental, quality or operational audits. The existing detailed module specifications illustrate the **India-first concept** and are not yet generalized or legally validated. Statutory thresholds, standards, retention periods and deployment locations must be reviewed for each jurisdiction and effective period.
+## Product boundary
 
-## Documentation website
+The initial problem is **financial audit analytics, evidence collection, investigation and review**, not automatically conducting an entire statutory audit or issuing an audit opinion. The reusable architecture is jurisdiction-aware; **India is the first illustrative rule pack**, requiring professional/legal validation before real-world use.
 
-This repository contains a Docusaurus documentation site, not the application:
+Security controls can be designed with ISO/IEC 27001 and SOC 2 objectives in mind. PCI DSS is **scope-dependent**, not automatically applicable to financial ledgers. No certifications or attestations are claimed.
+
+## Run the documentation
 
 ```bash
 npm ci
-npm run start
 npm run build
+npm run start
 ```
 
 **Author:** Alok Rathava.

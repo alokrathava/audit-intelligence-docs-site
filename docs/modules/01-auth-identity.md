@@ -6,6 +6,10 @@ sidebar_position: 1
 
 # Auth & Identity
 
+:::caution Earlier module sketch — reconcile before implementation
+This page documents an earlier India-first design. The [canonical solution architecture](../architecture/solution-architecture.md), [domain model](../architecture/domain-model-v2.md), [review contract](../architecture/signoff-contract.md), and [decision records](../architecture/decision-records.md) override contradictory details in this module. It is a **reference use case**, not executable functionality.
+:::
+
 ## Purpose
 
 Owns user identity, authentication, session lifecycle, and account security across the entire
@@ -43,7 +47,7 @@ here alone.
 | FEAT-AUTH-015 | User invitation | Firm Admin invites a user by email to a tenant | Invitation token single-use, expires in 7 days; pre-assigns role on acceptance |
 | FEAT-AUTH-016 | SSO / SAML login | Firm-level SSO for enterprise tenants | SAML assertion maps to existing user by verified email; JIT provisioning optional per tenant config |
 | FEAT-AUTH-017 | Cross-tenant identity | One user account can belong to multiple tenants | Login is tenant-agnostic; tenant selection happens post-authentication if user has 2+ memberships |
-| FEAT-AUTH-018 | Support impersonation | Support staff temporarily assumes a user's view | Requires explicit reason logged; impersonated session visibly banner-marked; full audit trail entry |
+| FEAT-AUTH-018 | Support impersonation (deferred) | **Not available in v1**; support cannot assume private customer-content access | No impersonated customer-data session exists in v1 |
 | FEAT-AUTH-019 | Account deactivation | Admin deactivates a user | All sessions revoked immediately; login attempts return 403 with no further detail |
 | FEAT-AUTH-020 | API key issuance (service accounts) | Non-interactive credential for [Integrations](./14-integrations-api) | Key shown once at creation; stored hashed; scoped to specific permissions |
 

@@ -1,83 +1,68 @@
 ---
 id: intro
-title: Audit Intelligence — Use-Case Study
+title: The Aster Engagement — An Audit Intelligence Story
 slug: /
 sidebar_position: 1
+description: A story-driven use case and system architecture for financial audit analytics, evidence, and accountable review.
 ---
 
-# Audit Intelligence System
+# It imported successfully. That wasn't enough.
 
-**Use-case study · Proposed global-ready financial audit SaaS · India-first reference jurisdiction**
+*An illustrative financial audit case study and solution architecture.*
 
-:::note Project status
-This repository defines proposed user workflows and design assumptions. The audit platform, rule engine, integrations, and customer results have **not** been demonstrated by this repository.
-:::
+> **Fictional case:** Northstar Audit, a fictional mid-sized audit firm, is reviewing Aster Components, a fictional manufacturing client. Names, data and events are illustrative. Nothing described here is a deployed product, a completed audit or a compliance certification.
 
-## Problem statement
+It's Monday morning. An audit manager receives a new engagement and a familiar collection of documents: accounting exports, spreadsheets and tax data. The firm's staff know how to examine them, but the steps vary between clients, evidence lives in scattered folders, and reviewers struggle to retrace every decision.
 
-A financial audit firm must review client records, handle inconsistent ledgers, reconcile exports, and document why exceptions were accepted or questioned. Jurisdictions differ in fiscal calendars, laws, retention and local audit standards. The question is:
+A platform can make the arithmetic faster. **But who proves the source files were complete?** Who explains why a suspicious entry was dismissed? What stops an incomplete test from being presented as a clean result? And when a partner signs off, **what exactly are they approving?**
 
-> How can an audit team collect digital books, identify reproducible review candidates, preserve evidence, and hand the engagement to a partner for a defensible review?
+That is the problem this design attempts to solve.
 
-## Proposed system outcome
+## Follow the week
 
-The firm creates **one engagement per client and reporting period**, with a configured jurisdiction and applicable rule-pack version. India is the first reference use case, not the platform's permanent boundary. The system supports digital intake, validation, ledger normalization, reproducible checks, finding investigation, client query letters, partner review, and traceable activity. It **supports**, but cannot replace, auditor judgment or an audit opinion.
+| Day | What happens | Question it forces | Design response |
+| --- | --- | --- | --- |
+| **Monday** | A new engagement is opened | Who may work on it, and what audit work is planned? | [Engagement and audit plan](./story/01-the-engagement.md) |
+| **Tuesday** | Every imported row looks valid, but the export is incomplete | Is the accounting population trustworthy? | [Dataset validation and reconciliation](./story/02-the-missing-records.md) |
+| **Wednesday** | A deterministic check flags an unusual entry | How do we avoid treating a flag as a legal conclusion? | [Rules, evidence and investigation](./story/03-findings-not-verdicts.md) |
+| **Thursday** | A partner reviews the work | Can an unfinished or stale run pass sign-off? | [Fail-closed review gate](./story/04-the-review-gate.md) |
+| **Friday** | Someone asks for a complete record of what happened | Can the firm reconstruct every meaningful decision? | [Security, evidence and event integrity](./story/05-trust-and-evidence.md) |
 
-## Actors
+**[Begin the story →](./story/01-the-engagement.md)**
 
-| Actor | Responsibility | Example scenarios |
-| --- | --- | --- |
-| Firm Admin | Set up tenant, staff, plan, settings | [UC-01](./use-cases/01-firm-onboarding.md), [UC-11](./use-cases/11-firm-administration.md) |
-| Engagement Partner | Supervise engagement and sign-off | [UC-02](./use-cases/02-create-engagement.md), [UC-09](./use-cases/09-partner-sign-off.md) |
-| Audit Staff | Collect, analyze, investigate, document | [UC-04](./use-cases/04-validate-records.md), [UC-07](./use-cases/07-investigate-findings.md) |
-| Client Representative | Submit documents through a restricted link | [UC-03](./use-cases/03-client-intake.md) |
-| Platform Operator | Operate infrastructure without reading audit content | [UC-12](./use-cases/12-evidence-and-audit-history.md) |
-
-## Example end-to-end scenario
-
-In the India-first example, a CA firm audits a client for FY 2025–26. The partner creates the engagement and assigns staff. The client uploads Tally, spreadsheet and GSTR-2B exports. The platform validates files and displays rejected records; staff confirm ambiguous ledger mappings. The firm runs a recorded set of deterministic checks. An auditor inspects flagged transactions, asks the client for an explanation, records the outcome, and prepares a query letter. The partner reviews unresolved critical issues and explicitly signs off once the applicable gates are satisfied.
-
-This is a **hypothetical India-specific scenario**, not a description of working software. Other jurisdictions require independently verified rules and local professional review.
+## The proposed solution
 
 ```mermaid
 flowchart LR
-    A["Firm onboarding"] --> B["Engagement"]
-    B --> C["Client file intake"]
-    C --> D["Validation and mapping"]
-    D --> E["Deterministic checks"]
-    E --> F["Human investigation"]
-    F --> G["Query letters"]
-    G --> H["Partner sign-off"]
-    D --> X["Rejected / unmapped items"]
-    X --> F
+  A["Plan engagement"] --> B["Collect source records"]
+  B --> C["Validate population and balances"]
+  C --> D["Map accounts and run approved checks"]
+  D --> E["Investigate and document procedures"]
+  E --> F["Partner review / controlled completion"]
+  G["Access controls and durable evidence"] -. protects .-> B
+  G -. protects .-> E
+  C --> H["Incomplete or unreconciled: block dependent tests"]
+  H --> B
 ```
 
-## Global scope and platform assurance
+The **core innovation is not a checklist of compliance buzzwords**. It is a coherent evidence chain from source material to a human-reviewed conclusion, with visible gaps and failures.
 
-**Approach:** reuse the engagement/evidence/review engine globally; isolate Indian rules, import formats, fiscal calendar, currency defaults and legal assumptions in a [jurisdiction pack](./architecture/jurisdiction-model.md). The product focuses on **financial audit**, not every type of audit. See [UC-13](./use-cases/13-configure-jurisdiction.md).
+This platform **supports** audit work. It does not determine that financial statements are fairly presented, replace qualified auditors, or issue audit opinions.
 
-**Security:** propose controls informed by ISO/IEC 27001/27002 and SOC 2 Trust Services Criteria, plus a conditional PCI DSS assessment for payment-account data. **No ISO certification, SOC 2 report or PCI DSS validation is claimed.** See [assurance design](./architecture/assurance-design.md), [framework comparison](./reference/assurance-frameworks.md), and [UC-14](./use-cases/14-control-evidence-review.md).
+## Explore the engineering
 
-## Core boundaries
+Read [the architecture walkthrough](./story/06-from-story-to-system.md), [the logical solution architecture](./architecture/solution-architecture.md), [the canonical data model](./architecture/domain-model-v2.md), [the review contract](./architecture/signoff-contract.md), and [the architectural decisions](./architecture/decision-records.md).
 
-- **Deterministic detection, human decisions:** rule outputs flag possible exceptions. They do not automatically establish fraud, non-compliance, or audit conclusions.
-- **Source and decision traceability:** link each candidate finding to a source snapshot, rule/configuration version and review history.
-- **Firm and engagement access control:** a user may only view records permitted by their tenant and engagement assignment; client upload links grant upload-only access.
-- **Proposed v1 exclusions:** OCR, bookkeeping, automated audit opinions, live Tally synchronization, predictive scoring, and unrestricted client dashboards.
+Existing [use cases](./use-cases/index.md) and [detailed module sketches](./modules/04-engagements.md) serve as supporting requirements. Where older India-first examples disagree with the canonical architecture and contracts, the canonical documents take precedence until the module details are reconciled.
 
-## Measurable acceptance targets—not achieved results
+## Scope, geography and assurance
 
-| Criterion | Future validation |
-| --- | --- |
-| Repeatable findings | Compare canonical outputs for identical input and rule configuration |
-| No silent data loss | Verify rejected rows are counted and reported |
-| Human approval | Ensure unresolved Critical items block partner sign-off |
-| Tenant isolation | Prove forged tenant and engagement requests cannot leak content |
-| Evidence chain | Resolve a finding to source rows, rules and decisions |
-| Jurisdiction check | Reject unapproved, unsupported, or out-of-effective-period statutory rule packs |
-| Platform assurance | Produce scoped access/change/incident evidence, with independent verification of controls before assurance claims |
-| Payment boundary | Record PCI DSS scoping and third-party payment responsibilities; flag unexpected card data in uploads |
+- **Audience:** Financial audit teams and partners. For the initial pilot, validate with practicing Indian CAs.
+- **Launch reference:** India's reporting conventions and examples; future markets require independently approved jurisdiction rules and source adapters.
+- **V1 product:** Engagement planning, digital source intake, population reconciliation, deterministic review candidates, workpapers, findings and partner review.
+- **Not v1:** Automated audit opinions, general ISO management-system auditing, enterprise SSO, full public API, automatic legal conclusions or a compliance certification.
+- **Security:** Design for access control, tenant isolation, source integrity, incident response and evidence. ISO/IEC 27001, SOC 2 and PCI DSS are considered only according to their applicable scope; no assurance claim is made.
 
-## Navigate
+## What would prove the concept?
 
-Start with the **[use-case catalogue](./use-cases/index.md)**. The [module specifications](./modules/04-engagements.md) and [proposed architecture](./architecture/system-context.md) remain supporting implementation options. The [statutory rule catalogue](./reference/statutory-rules.md) requires professional/legal validation before real-world use.
+One qualified audit team can demonstrate, on representative test records, that the platform can detect **incomplete source populations**, reproduce its check outputs, track all reviewer decisions, prevent improper sign-off, and provide an independently inspectable evidence package. Details and negative tests are in the [requirements traceability matrix](./reference/requirements-traceability.md).

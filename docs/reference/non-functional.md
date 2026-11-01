@@ -8,6 +8,10 @@ sidebar_position: 3
 
 Proposed cross-cutting requirements: performance, availability, legal retention and security targets are **not proven outcomes**. Avoid applying India-specific obligations automatically to other jurisdictions.
 
+## Evidence correctness takes priority
+
+Rule-run duration and API latency are **benchmarks to measure**, not reasons to skip source-population reconciliation or legally required auditor review. All advertised throughput targets must state source type, hardware profile, dataset size and processing stage. See [Acceptance Matrix](./requirements-traceability.md).
+
 ## Performance
 
 | Operation | Target |

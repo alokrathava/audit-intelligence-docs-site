@@ -1,0 +1,8 @@
+{
+  "label": "The Audit Story",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "A fictional engagement shows why each system-design decision exists."
+  }
+}

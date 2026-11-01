@@ -6,7 +6,13 @@ sidebar_position: 8
 
 # Findings Workflow
 
+:::caution Earlier module sketch — reconcile before implementation
+This page documents an earlier India-first design. The [canonical solution architecture](../architecture/solution-architecture.md), [domain model](../architecture/domain-model-v2.md), [review contract](../architecture/signoff-contract.md), and [decision records](../architecture/decision-records.md) override contradictory details in this module. It is a **reference use case**, not executable functionality.
+:::
+
 ## Purpose
+
+Owns human review/disposition of candidates **created durably by the Rule Engine**, not duplicate finding creation from an event. Superseding runs preserve original workpapers and review history; unresolved blockers cannot disappear when a later check fails or lacks input. See [Sign-off Contract](../architecture/signoff-contract.md).
 
 Owns a finding's life after the [Rule Engine](./07-rule-engine) creates it: assignment, evidence
 gathering, client response capture, resolution, and the gate that blocks engagement sign-off while
