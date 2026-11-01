@@ -15,7 +15,7 @@ These proposed controls apply across the platform. Older detailed modules illust
 | Transport | TLS 1.2+ everywhere, HSTS enabled |
 | Authentication | JWT access tokens (short-lived) + rotating refresh tokens, see [Auth & Identity](../modules/01-auth-identity) |
 | Authorization | Role-based, evaluated per-request at the API Gateway and re-checked at the service layer | 
-| Tenant isolation | Schema-per-tenant, resolved from the authenticated token, never from a client-supplied header alone |
+| Tenant isolation | firm-scoped shared PostgreSQL tables with RLS, resolved from the authenticated token, never from a client-supplied header alone |
 | Secrets | Stored in a secrets manager, never in application config or source |
 | Data at rest | Database and object storage encrypted at rest |
 | Sensitive records | Financial documents, tax identifiers (e.g. Indian PAN/GSTIN), PII and audit evidence are isolated client/firm data; no cross-tenant analytics or model training |

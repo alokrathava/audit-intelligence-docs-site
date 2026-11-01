@@ -8,6 +8,8 @@ sidebar_position: 1
 
 **India-specific illustrative rule pack.** The rules below are not a globally applicable registry or verified legal advice. Effective dates, exceptions, thresholds and applicability must be assessed by qualified Indian audit/legal professionals before actual use. **Never apply them automatically outside a validated India engagement.** The [proposed engine](../modules/07-rule-engine.md) should pin a reviewed [jurisdiction pack](../architecture/jurisdiction-model.md), use deterministic checks and treat results as candidates for human review.
 
+**Validation status:** Every numerical threshold and legal applicability example below is a **research placeholder** awaiting independent qualified review, including effective dates and exceptions. The design must not interpret a finding as an established statutory violation. See [Domain Validation Register](./domain-validation-register.md).
+
 ## Summary
 
 | Rule ID | Legal Reference | Severity | Default Threshold |
@@ -55,7 +57,7 @@ threshold based on whether a supply agreement exists.
 
 ## GST-ITC-001 — 3-way match against GSTR-2B
 
-3-way matches the purchase register against GSTR-2B, with a ±₹1 tolerance for rounding. Missing-
+Proposes a comparison between the purchase register and GSTR-2B; this is **two distinct sources** unless a third source is independently specified and validated. The check compares, with a ±₹1 tolerance for rounding. Missing-
 from-2B and value-mismatch cases are both flagged; matched invoices produce no finding.
 
 **Logic:** join purchase-register rows to GSTR-2B rows on supplier GSTIN + invoice number, compare

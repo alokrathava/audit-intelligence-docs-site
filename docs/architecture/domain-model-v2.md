@@ -6,7 +6,7 @@ sidebar_position: 2
 
 # Canonical Domain Model
 
-> **V2 domain proposal.** Existing module tables in [Legacy Shared Data Model](./data-model.md) are illustrative and must be reconciled against this model before implementation.
+> **Canonical case-study proposal.** The [Shared Data Model](./data-model.md) describes the same selected storage choice. No production schema is implemented.
 
 ## The key distinction
 

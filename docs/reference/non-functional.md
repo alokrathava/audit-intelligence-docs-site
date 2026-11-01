@@ -12,6 +12,8 @@ Proposed cross-cutting requirements: performance, availability, legal retention 
 
 Rule-run duration and API latency are **benchmarks to measure**, not reasons to skip source-population reconciliation or legally required auditor review. All advertised throughput targets must state source type, hardware profile, dataset size and processing stage. See [Acceptance Matrix](./requirements-traceability.md).
 
+See [capacity model](../architecture/capacity-model.md) for hypothetical workload derivations and explicit measurement limits.
+
 ## Performance
 
 | Operation | Target |

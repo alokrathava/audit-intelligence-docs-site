@@ -1,93 +1,66 @@
 ---
 id: system-context
-title: System Context & Service Topology
-sidebar_position: 1
+title: System Context & Logical Components
+sidebar_position: 8
 ---
 
-# System Context & Service Topology
+# System Context & Logical Components
 
-:::caution Earlier distributed architecture
-This page records an earlier **logical service topology**, not the preferred v1 physical deployment. The [canonical solution architecture](./solution-architecture.md) uses a modular monolith with background workers and atomic audit/outbox persistence. Consult [ADRs](./decision-records.md) before implementing service boundaries.
-:::
+This is the **selected proposal** for the case study. Components are logical modules **inside one backend**, not twelve independently deployed services. Asynchronous ingestion and rules workers share versioned evidence contracts and a transactional database. See [ADR-002](./decision-records.md).
 
 ## Service map
 
-| Service | Owns | Talks to |
-|---|---|---|
-| API Gateway | Routing, JWT verification, rate limiting, tenant header injection | All services |
-| Auth & Identity Service | Credentials, sessions, MFA, SSO | Tenant Service, Notification Service |
-| Tenant Service | Tenant lifecycle, schema provisioning, tenant config | Billing Service |
-| Billing Service | Plans, subscriptions, invoices, metering, payment gateway | Tenant Service, Notification Service |
-| Engagement Service | Clients, financial years, engagement lifecycle | Tenant Service |
-| Ingestion Service | Upload, virus scan, file parsing | Engagement Service, Event Bus |
-| Normalization Service | Ledger-to-taxonomy mapping | Event Bus |
-| Rule Engine Service | Statutory rule execution | Event Bus |
-| Findings Service | Finding lifecycle, assignment, evidence | Event Bus, Notification Service |
-| Reporting Service | Query letter and export generation | Event Bus |
-| Notification Service | Email + in-app delivery | Event Bus, external email provider |
-| Audit Trail Service | Immutable event log, retention | Event Bus (subscribes to everything) |
+| Logical component | Owns | Communication boundary |
+| --- | --- | --- |
+| Identity and tenancy | User, firm membership, scoped authorization | Verified API request and DB policy |
+| Engagement/planning | Client scope, risk/procedure plan, engagement revision | Same application transaction |
+| Source ingestion | Source version, scan, parser status and staging | Enqueue jobs only after durable commit |
+| Reconciliation | Source counts/totals, population suitability, reviewer acceptance | Dataset snapshot contract |
+| Normalization | Mapping to explicit, versioned account taxonomy | Dataset/mapping revision |
+| Deterministic checks | Check result, data coverage and candidate findings | Dataset + approved pack versions |
+| Findings/workpapers | Assignment, note, evidence attachment, human disposition | Authorization + version check |
+| Review | Atomic approval of a revision and a manifest | State transition, no stale results |
+| Reporting | Query letters, exports and integrity manifest | Background job and object store |
+| Notifications | Delivery preferences, messages, retry status | Outbox dispatched events |
+| Platform evidence | Domain audit record, outbox delivery and integrity checks | Transactional journal and verification |
+| Billing (future) | Subscription, invoices, versioned entitlements | Hosted billing provider and idempotent usage |
 
 ## Event catalogue
 
-| Event | Producer | Consumers | Payload (key fields) |
-|---|---|---|---|
-| `tenant.provisioned` | Tenant Service | Billing, Notification | `tenant_id`, `plan_id` |
-| `subscription.updated` | Billing Service | Tenant, Notification | `tenant_id`, `plan_id`, `status` |
-| `user.invited` | Auth Service | Notification | `tenant_id`, `email`, `role` |
-| `file.uploaded` | Ingestion Service | Ingestion (self-dispatch) | `engagement_id`, `file_type`, `storage_path` |
-| `data.parsed` | Ingestion Service | Normalization Service | `engagement_id`, `row_count`, `rejected_count` |
-| `data.normalized` | Normalization Service | Rule Engine Service | `engagement_id`, `unmapped_count` |
-| `rules.completed` | Rule Engine Service | Findings, Reporting, Notification | `engagement_id`, `critical_findings`, `high_findings` |
-| `finding.assigned` | Findings Service | Notification | `finding_id`, `assignee_id` |
-| `finding.resolved` | Findings Service | Audit Trail | `finding_id`, `resolved_by` |
-| `report.generated` | Reporting Service | Notification | `finding_id`, `report_path` |
-| `usage.recorded` | Ingestion / Rule Engine | Billing Service | `tenant_id`, `metric`, `quantity` |
-| `intake.link_created` | Ingestion Service | Notification | `engagement_id`, `intake_link_id`, `created_by` |
-| `intake.uploaded` | Ingestion Service | Notification, Ingestion (self-dispatch) | `engagement_id`, `intake_link_id`, `file_type` |
+| Event | Producer | Result / contract |
+| --- | --- | --- |
+| `engagement.plan_changed` | Engagement | Bump revision; invalidate dependent work |
+| `source.uploaded` | Intake | Source version persisted; queue scanning |
+| `dataset.parsed` | Worker | Typed staging available; **not** complete by implication |
+| `dataset.reconciled` | Reconciliation | Reviewed source scope and evidence references |
+| `mapping.updated` | Auditor / normalization | Bump revision; invalidate dependent checks |
+| `checks.finished` | Rule worker | Run and candidates **already durably committed**, explicit coverage statuses |
+| `finding.reviewed` | Workpapers | Review action committed; event only notifies/projection |
+| `engagement.approved` | Review | Frozen revision/manifest and reviewer ID committed |
+| `usage.recorded` | Metering (future) | Idempotency key prevents billing duplicates |
 
-Every event is consumed by the Audit Trail Service, which is the implicit subscriber to the whole
-bus (omitted from each row above for brevity) — see
-[Module 12 — Audit Trail & Compliance](../modules/12-audit-trail-compliance).
+Events are **effects of committed state changes**, not the only source of audit truth. All carry stable event IDs, aggregate revisions, actor context and schema version.
 
 ## DFD Level 2 — Cross-Service Event Flow
 
 ```mermaid
-flowchart LR
-    Ing["Ingestion Service"]
-    Norm["Normalization Service"]
-    Rules["Rule Engine Service"]
-    Find["Findings Service"]
-    Rep["Reporting Service"]
-    Notif["Notification Service"]
-    Audit["Audit Trail Service"]
-    Bill["Billing Service"]
-    Bus{{"Event Bus"}}
-
-    Ing -->|"file.uploaded"| Bus --> Ing
-    Ing -->|"data.parsed"| Bus --> Norm
-    Norm -->|"data.normalized"| Bus --> Rules
-    Rules -->|"rules.completed"| Bus
-    Bus --> Find
-    Bus --> Rep
-    Bus --> Notif
-    Find -->|"finding.assigned<br/>finding.resolved"| Bus --> Notif
-    Rep -->|"report.generated"| Bus --> Notif
-    Ing -->|"usage.recorded"| Bus --> Bill
-    Rules -->|"usage.recorded"| Bus --> Bill
-    Bus --> Audit
+flowchart TB
+  UI["Firm UI / intake portal"] --> API["Modular backend"]
+  API -->|"Atomic domain mutation + audit + outbox"| DB[("PostgreSQL / tenant RLS")]
+  DB --> DISP["Outbox dispatcher"]
+  DISP --> Q[["At-least-once job queue"]]
+  Q --> W["Parsing / reconciliation / checks / reports workers"]
+  W --> DB
+  W --> OBJ[("Versioned object storage")]
+  DISP --> NOTIF["Notifications / external integrations"]
 ```
 
 ## Deployment shape
 
-- Stateless services behind the API Gateway, horizontally scalable independently.
-- One Postgres cluster, **schema-per-tenant** — see
-  [Multi-Tenancy → Data Model](../modules/02-multi-tenancy#data-model) for the isolation model.
-- Event bus (broker + worker pool) decouples ingestion → normalization → rule engine → downstream
-  consumers, so a slow rule run never blocks the upload response.
-- Object storage for uploaded source files and generated reports.
+One backend deployable, PostgreSQL with firm-scoped RLS policies and separate privileged migration roles, versioned object storage, queue/worker processes and observability. Worker scaling is independently configurable even when core domain modules share a process.
+
+A request selects a firm only after global identity/membership and engagement authorization; `tenant_id` and PostgreSQL RLS are **defense in depth**, not authorization inferred from a client header. RLS requires dedicated negative security tests and careful DB ownership/role configuration.
 
 ## Related pages
 
-- [Data Model](./data-model)
-- [Cross-Cutting Concerns](./cross-cutting)
-- [Glossary](./glossary)
+[Canonical Solution Architecture](./solution-architecture.md) · [Data Model](./data-model.md) · [Architecture Trade-offs](./alternatives-and-tradeoffs.md) · [Security Design](./assurance-design.md) · [Story](../story/06-from-story-to-system.md)
