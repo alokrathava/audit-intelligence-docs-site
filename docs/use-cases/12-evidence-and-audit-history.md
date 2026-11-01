@@ -46,6 +46,6 @@ A traceable chronological record available to permitted reviewers.
 
 ## Supporting specifications
 
-[Module 12](../modules/12-audit-trail-compliance), [Module 14](../modules/14-integrations-api). These pages are proposed design details rather than evidence of deployed services.
+[Module 12](../modules/12-audit-trail-compliance.md), [Module 14](../modules/14-integrations-api.md). These pages are proposed design details rather than evidence of deployed services.
 
-[Back to use-case catalogue](./index)
+[Back to use-case catalogue](./index.md)

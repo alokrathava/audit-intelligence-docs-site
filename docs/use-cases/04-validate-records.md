@@ -46,6 +46,6 @@ Traceable accepted transaction set and explicit invalid-row report.
 
 ## Supporting specifications
 
-[Module 05](../modules/05-document-ingestion). These pages are proposed design details rather than evidence of deployed services.
+[Module 05](../modules/05-document-ingestion.md). These pages are proposed design details rather than evidence of deployed services.
 
-[Back to use-case catalogue](./index)
+[Back to use-case catalogue](./index.md)

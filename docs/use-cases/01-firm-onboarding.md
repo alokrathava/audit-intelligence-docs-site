@@ -44,6 +44,6 @@ An active isolated firm workspace with its intended first Admin.
 
 ## Supporting specifications
 
-[Module 01](../modules/01-auth-identity), [Module 02](../modules/02-multi-tenancy). These pages are proposed design details rather than evidence of deployed services.
+[Module 01](../modules/01-auth-identity.md), [Module 02](../modules/02-multi-tenancy.md). These pages are proposed design details rather than evidence of deployed services.
 
-[Back to use-case catalogue](./index)
+[Back to use-case catalogue](./index.md)

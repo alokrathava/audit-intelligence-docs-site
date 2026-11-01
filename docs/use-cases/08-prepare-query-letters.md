@@ -46,6 +46,6 @@ Versioned, evidence-linked query letter ready for an auditor to send.
 
 ## Supporting specifications
 
-[Module 09](../modules/09-reporting-query-letters). These pages are proposed design details rather than evidence of deployed services.
+[Module 09](../modules/09-reporting-query-letters.md). These pages are proposed design details rather than evidence of deployed services.
 
-[Back to use-case catalogue](./index)
+[Back to use-case catalogue](./index.md)

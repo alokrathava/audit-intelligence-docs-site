@@ -46,6 +46,6 @@ Finding has a justified disposition, evidence and responsible actor.
 
 ## Supporting specifications
 
-[Module 08](../modules/08-findings-workflow). These pages are proposed design details rather than evidence of deployed services.
+[Module 08](../modules/08-findings-workflow.md). These pages are proposed design details rather than evidence of deployed services.
 
-[Back to use-case catalogue](./index)
+[Back to use-case catalogue](./index.md)

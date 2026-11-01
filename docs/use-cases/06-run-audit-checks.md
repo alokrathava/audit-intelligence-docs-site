@@ -46,6 +46,6 @@ Versioned rule-run result with reproducible candidate findings.
 
 ## Supporting specifications
 
-[Module 07](../modules/07-rule-engine). These pages are proposed design details rather than evidence of deployed services.
+[Module 07](../modules/07-rule-engine.md). These pages are proposed design details rather than evidence of deployed services.
 
-[Back to use-case catalogue](./index)
+[Back to use-case catalogue](./index.md)

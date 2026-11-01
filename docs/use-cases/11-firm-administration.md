@@ -45,6 +45,6 @@ Accountable, tenant-scoped settings and membership state.
 
 ## Supporting specifications
 
-[Module 03](../modules/03-subscriptions-billing), [Module 13](../modules/13-admin-settings). These pages are proposed design details rather than evidence of deployed services.
+[Module 03](../modules/03-subscriptions-billing.md), [Module 13](../modules/13-admin-settings.md). These pages are proposed design details rather than evidence of deployed services.
 
-[Back to use-case catalogue](./index)
+[Back to use-case catalogue](./index.md)

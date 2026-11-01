@@ -36,18 +36,18 @@ flowchart TD
 
 | ID | Main actor | User goal | Scenario |
 | --- | --- | --- | --- |
-| UC-01 | Firm Admin | Establish a secure firm workspace | [Firm onboarding](./01-firm-onboarding) |
-| UC-02 | Engagement Partner | Start an audit for a client and FY | [Create engagement](./02-create-engagement) |
-| UC-03 | Auditor + Client Representative | Submit digital records safely | [Client intake](./03-client-intake) |
-| UC-04 | Audit Staff | Identify and handle invalid records | [Validate records](./04-validate-records) |
-| UC-05 | Audit Staff | Categorize heterogeneous ledgers | [Normalize ledgers](./05-normalize-ledgers) |
-| UC-06 | Audit Staff | Identify reproducible review candidates | [Run audit checks](./06-run-audit-checks) |
-| UC-07 | Audit Staff | Investigate and document exceptions | [Investigate findings](./07-investigate-findings) |
-| UC-08 | Audit Staff | Request client clarification in writing | [Prepare query letters](./08-prepare-query-letters) |
-| UC-09 | Engagement Partner | Review and authorize sign-off | [Partner sign-off](./09-partner-sign-off) |
-| UC-10 | Engagement Partner | Open next-year engagement | [Roll forward](./10-roll-forward) |
-| UC-11 | Firm Admin | Control team, plans and settings | [Firm administration](./11-firm-administration) |
-| UC-12 | Partner/Admin | Reconstruct evidence and decisions | [Evidence and history](./12-evidence-and-audit-history) |
+| UC-01 | Firm Admin | Establish a secure firm workspace | [Firm onboarding](./01-firm-onboarding.md) |
+| UC-02 | Engagement Partner | Start an audit for a client and FY | [Create engagement](./02-create-engagement.md) |
+| UC-03 | Auditor + Client Representative | Submit digital records safely | [Client intake](./03-client-intake.md) |
+| UC-04 | Audit Staff | Identify and handle invalid records | [Validate records](./04-validate-records.md) |
+| UC-05 | Audit Staff | Categorize heterogeneous ledgers | [Normalize ledgers](./05-normalize-ledgers.md) |
+| UC-06 | Audit Staff | Identify reproducible review candidates | [Run audit checks](./06-run-audit-checks.md) |
+| UC-07 | Audit Staff | Investigate and document exceptions | [Investigate findings](./07-investigate-findings.md) |
+| UC-08 | Audit Staff | Request client clarification in writing | [Prepare query letters](./08-prepare-query-letters.md) |
+| UC-09 | Engagement Partner | Review and authorize sign-off | [Partner sign-off](./09-partner-sign-off.md) |
+| UC-10 | Engagement Partner | Open next-year engagement | [Roll forward](./10-roll-forward.md) |
+| UC-11 | Firm Admin | Control team, plans and settings | [Firm administration](./11-firm-administration.md) |
+| UC-12 | Partner/Admin | Reconstruct evidence and decisions | [Evidence and history](./12-evidence-and-audit-history.md) |
 
 ## Shared success conditions
 
@@ -58,4 +58,4 @@ flowchart TD
 5. Resolution and final sign-off have accountable human actors and durable records.
 6. Retention periods, statutory thresholds, and performance targets are **proposed assumptions** subject to review and testing.
 
-For the design behind these scenarios, see the [proposed architecture](../architecture/system-context), [detailed specifications](../modules/04-engagements), and [illustrative rule catalogue](../reference/statutory-rules).
+For the design behind these scenarios, see the [proposed architecture](../architecture/system-context.md), [detailed specifications](../modules/04-engagements.md), and [illustrative rule catalogue](../reference/statutory-rules.md).

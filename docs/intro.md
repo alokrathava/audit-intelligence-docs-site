@@ -27,11 +27,11 @@ The firm creates **one engagement per client per Indian financial year**. The sy
 
 | Actor | Responsibility | Example scenarios |
 | --- | --- | --- |
-| Firm Admin | Set up tenant, staff, plan, settings | [UC-01](./use-cases/01-firm-onboarding), [UC-11](./use-cases/11-firm-administration) |
-| Engagement Partner | Supervise engagement and sign-off | [UC-02](./use-cases/02-create-engagement), [UC-09](./use-cases/09-partner-sign-off) |
-| Audit Staff | Collect, analyze, investigate, document | [UC-04](./use-cases/04-validate-records), [UC-07](./use-cases/07-investigate-findings) |
-| Client Representative | Submit documents through a restricted link | [UC-03](./use-cases/03-client-intake) |
-| Platform Operator | Operate infrastructure without reading audit content | [UC-12](./use-cases/12-evidence-and-audit-history) |
+| Firm Admin | Set up tenant, staff, plan, settings | [UC-01](./use-cases/01-firm-onboarding.md), [UC-11](./use-cases/11-firm-administration.md) |
+| Engagement Partner | Supervise engagement and sign-off | [UC-02](./use-cases/02-create-engagement.md), [UC-09](./use-cases/09-partner-sign-off.md) |
+| Audit Staff | Collect, analyze, investigate, document | [UC-04](./use-cases/04-validate-records.md), [UC-07](./use-cases/07-investigate-findings.md) |
+| Client Representative | Submit documents through a restricted link | [UC-03](./use-cases/03-client-intake.md) |
+| Platform Operator | Operate infrastructure without reading audit content | [UC-12](./use-cases/12-evidence-and-audit-history.md) |
 
 ## Example end-to-end scenario
 
@@ -71,4 +71,4 @@ flowchart LR
 
 ## Navigate
 
-Start with the **[use-case catalogue](./use-cases/index)**. The [module specifications](./modules/04-engagements) and [proposed architecture](./architecture/system-context) remain supporting implementation options. The [statutory rule catalogue](./reference/statutory-rules) requires professional/legal validation before real-world use.
+Start with the **[use-case catalogue](./use-cases/index.md)**. The [module specifications](./modules/04-engagements.md) and [proposed architecture](./architecture/system-context.md) remain supporting implementation options. The [statutory rule catalogue](./reference/statutory-rules.md) requires professional/legal validation before real-world use.

@@ -45,6 +45,6 @@ Source files are linked to exactly one engagement without granting full client a
 
 ## Supporting specifications
 
-[Module 15](../modules/15-client-intake), [Module 05](../modules/05-document-ingestion). These pages are proposed design details rather than evidence of deployed services.
+[Module 15](../modules/15-client-intake.md), [Module 05](../modules/05-document-ingestion.md). These pages are proposed design details rather than evidence of deployed services.
 
-[Back to use-case catalogue](./index)
+[Back to use-case catalogue](./index.md)

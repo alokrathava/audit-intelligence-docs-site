@@ -43,6 +43,6 @@ Inspectable mapping for known ledger names and explicit queue of unknowns.
 
 ## Supporting specifications
 
-[Module 06](../modules/06-ledger-normalization). These pages are proposed design details rather than evidence of deployed services.
+[Module 06](../modules/06-ledger-normalization.md). These pages are proposed design details rather than evidence of deployed services.
 
-[Back to use-case catalogue](./index)
+[Back to use-case catalogue](./index.md)

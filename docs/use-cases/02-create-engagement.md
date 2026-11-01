@@ -44,6 +44,6 @@ Unique Draft engagement, owned by one firm, client and FY.
 
 ## Supporting specifications
 
-[Module 04](../modules/04-engagements). These pages are proposed design details rather than evidence of deployed services.
+[Module 04](../modules/04-engagements.md). These pages are proposed design details rather than evidence of deployed services.
 
-[Back to use-case catalogue](./index)
+[Back to use-case catalogue](./index.md)
