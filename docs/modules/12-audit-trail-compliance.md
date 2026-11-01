@@ -6,7 +6,13 @@ sidebar_position: 12
 
 # Audit Trail & Compliance
 
+:::caution Earlier module sketch — reconcile before implementation
+This page documents an earlier India-first design. The [canonical solution architecture](../architecture/solution-architecture.md), [domain model](../architecture/domain-model-v2.md), [review contract](../architecture/signoff-contract.md), and [decision records](../architecture/decision-records.md) override contradictory details in this module. It is a **reference use case**, not executable functionality.
+:::
+
 ## Purpose
+
+Owns durable, attributable evidence of meaningful changes. A best-effort **event-bus subscriber alone is insufficient** to guarantee it: a business mutation, audit record and outbox entry must commit atomically, followed by idempotent delivery. Separate hash-verified exports from the security of underlying source history; see [Solution Architecture](../architecture/solution-architecture.md).
 
 Owns the immutable, append-only record of who did what, when, across every module — the record
 that makes the platform itself defensible under review, distinct from the audit *findings* the

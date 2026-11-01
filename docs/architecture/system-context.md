@@ -6,6 +6,10 @@ sidebar_position: 1
 
 # System Context & Service Topology
 
+:::caution Earlier distributed architecture
+This page records an earlier **logical service topology**, not the preferred v1 physical deployment. The [canonical solution architecture](./solution-architecture.md) uses a modular monolith with background workers and atomic audit/outbox persistence. Consult [ADRs](./decision-records.md) before implementing service boundaries.
+:::
+
 ## Service map
 
 | Service | Owns | Talks to |

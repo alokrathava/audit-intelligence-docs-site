@@ -6,9 +6,13 @@ sidebar_position: 5
 
 # Document Ingestion
 
+:::caution Earlier module sketch — reconcile before implementation
+This page documents an earlier India-first design. The [canonical solution architecture](../architecture/solution-architecture.md), [domain model](../architecture/domain-model-v2.md), [review contract](../architecture/signoff-contract.md), and [decision records](../architecture/decision-records.md) override contradictory details in this module. It is a **reference use case**, not executable functionality.
+:::
+
 ## Purpose
 
-Owns getting a client's raw books into the platform as clean transaction rows. Accepts Tally XML
+Owns **source-file versions and typed parsed staging datasets**. Parsing alone does not establish data completeness: reconciliation of record counts, source scope, trial balances and relevant control totals is a distinct mandatory step before dependent testing. The earlier generic `transaction` table is not the sole authoritative model; see [Canonical Domain Model](../architecture/domain-model-v2.md). Accepts Tally XML
 exports, Excel/CSV ledger dumps, and GSTR-2B JSON filings; validates, scans, and parses each into
 the common `transaction` schema that [Normalization](./06-ledger-normalization) and the
 [Rule Engine](./07-rule-engine) consume.

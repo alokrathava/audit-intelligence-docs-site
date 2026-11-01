@@ -6,6 +6,10 @@ sidebar_position: 2
 
 # Multi-Tenancy
 
+:::caution Earlier module sketch — reconcile before implementation
+This page documents an earlier India-first design. The [canonical solution architecture](../architecture/solution-architecture.md), [domain model](../architecture/domain-model-v2.md), [review contract](../architecture/signoff-contract.md), and [decision records](../architecture/decision-records.md) override contradictory details in this module. It is a **reference use case**, not executable functionality.
+:::
+
 ## Purpose
 
 Owns the tenant (audit firm) as the root of isolation for every other module. Every request that
@@ -46,8 +50,7 @@ offboarding.
   irreversible purge) to prevent accidental data loss.
 - **BR-MT-03**: Suspension never deletes data — a suspended tenant's data is fully intact on
   reinstatement.
-- **BR-MT-04**: The tenant identifier used for schema resolution is derived from the verified JWT
-  claim, never from a client-supplied header alone (see [Auth & Identity](./01-auth-identity)).
+- **BR-MT-04 (revised)**: Tenant selection must be verified against authenticated **global firm membership** and server-side engagement policy on each operation. Never trust a tenant header alone. Schema-per-tenant is a possible infrastructure choice, not proof of fail-closed isolation; see [ADR-004](../architecture/decision-records.md).
 
 ## Data model
 

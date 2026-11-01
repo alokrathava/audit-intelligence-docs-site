@@ -6,9 +6,15 @@ sidebar_position: 7
 
 # Rule Engine
 
+:::caution Earlier module sketch — reconcile before implementation
+This page documents an earlier India-first design. The [canonical solution architecture](../architecture/solution-architecture.md), [domain model](../architecture/domain-model-v2.md), [review contract](../architecture/signoff-contract.md), and [decision records](../architecture/decision-records.md) override contradictory details in this module. It is a **reference use case**, not executable functionality.
+:::
+
 ## Purpose
 
-Runs every deterministic statutory check across an engagement's full transaction set and produces
+Runs approved deterministic checks against a **pinned and adequately reconciled dataset snapshot**, producing candidate findings and explicit per-rule coverage states. `0 findings` does not mean success if input is missing. The engine owns candidate creation; downstream human workflow owns disposition. See [Review Contract](../architecture/signoff-contract.md).
+
+The earlier design described running every statutory check across an engagement's full transaction set and producing
 findings. This is the platform's core value proposition: arithmetic against fixed statutory
 thresholds, vectorized for speed, with zero model variance. The full rule catalogue lives in
 [Reference → Statutory Rules](../reference/statutory-rules); this page covers the engine that runs
@@ -177,7 +183,7 @@ full in [Reference → Statutory Rules](../reference/statutory-rules).
 | Rule threshold override set outside the bounded range | API rejects with 422 at config time, not silently clamped |
 | Rule run triggered while a prior run is still in progress | Second trigger queued, not run concurrently against the same transaction set |
 | Transaction set has zero rows (empty upload) | Run completes with zero findings, not an error |
-| One rule (e.g. GST-ITC-001) has no GSTR-2B data to join against | That rule produces zero findings and a `data_incomplete` note, other rules unaffected |
+| Required source missing (e.g. GSTR-2B for an applicable India check) | Mark check `INSUFFICIENT_DATA`; **never report as clean/completed**. Dependent required procedures and sign-off remain blocked or require documented limitation approval |
 
 ## Out of scope
 

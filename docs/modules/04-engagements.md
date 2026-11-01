@@ -6,6 +6,10 @@ sidebar_position: 4
 
 # Engagements
 
+:::caution Earlier module sketch — reconcile before implementation
+This page documents an earlier India-first design. The [canonical solution architecture](../architecture/solution-architecture.md), [domain model](../architecture/domain-model-v2.md), [review contract](../architecture/signoff-contract.md), and [decision records](../architecture/decision-records.md) override contradictory details in this module. It is a **reference use case**, not executable functionality.
+:::
+
 ## Purpose
 
 Owns the client master and the audit engagement lifecycle — the organizing unit that every
@@ -37,12 +41,9 @@ financial year; this module governs its states from creation through sign-off an
 
 ## Business rules & constraints
 
-- **BR-ENG-01**: An engagement cannot move to Under Review until at least one rule run has
-  completed (see [Rule Engine](./07-rule-engine)).
-- **BR-ENG-02**: An engagement cannot move to Signed Off while any Critical-severity finding is
-  unresolved.
-- **BR-ENG-03**: Financial year is stored as its start date (e.g. `2025-04-01`); the platform
-  always assumes the Indian FY convention (1 April–31 March).
+- **BR-ENG-01 (revised)**: An engagement may enter review only when required **planned procedures and source reconciliation evidence** are present or appropriately documented as exceptions. A single completed rule run is insufficient; see [Sign-off Contract](../architecture/signoff-contract.md).
+- **BR-ENG-02 (revised)**: Sign-off requires the complete **atomic readiness contract** (current revision, reconciled prerequisites, reviewed procedures, latest applicable runs, no unresolved blocking findings/notes and authorized approver). The Critical-severity condition alone is insufficient; see [Sign-off Contract](../architecture/signoff-contract.md).
+- **BR-ENG-03 (revised)**: Store explicit engagement period start/end, reporting framework and jurisdiction/calendar policy. India may use April–March, but the reusable core must not assume an Indian fiscal year.
 - **BR-ENG-04**: Staff without an explicit assignment to an engagement cannot view it, even within
   the same tenant, unless they hold the Firm Admin role.
 

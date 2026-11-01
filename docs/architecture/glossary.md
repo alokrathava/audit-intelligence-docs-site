@@ -11,7 +11,7 @@ sidebar_position: 4
 | Term | Meaning |
 |---|---|
 | Engagement | One audit assignment: a specific client, for a specific financial year |
-| Financial Year (FY) | 1 April – 31 March, the Indian statutory reporting year |
+| Reporting period / Financial Year (FY) | Engagement-specific dates; India-first examples commonly use 1 April–31 March. Not a universal fiscal calendar |
 | Voucher | A single Tally accounting entry, with one or more debit/credit legs |
 | Ledger | A named account in the client's chart of accounts (e.g. "Cash-in-Hand") |
 | Standard taxonomy | The platform's fixed chart of accounts (e.g. `Assets.Current.Cash`) that every client ledger is mapped onto |

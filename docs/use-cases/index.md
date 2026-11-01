@@ -7,6 +7,8 @@ sidebar_position: 1
 
 # Use-Case Catalogue
 
+These use cases are a **supporting reference catalogue** for the continuous [engagement story](../intro.md), [solution architecture](../architecture/solution-architecture.md) and [canonical sign-off contract](../architecture/signoff-contract.md). The scenarios are proposed and some legacy module details remain India-specific.
+
 A use case states **what an actor wants to achieve**, the initiating event, conditions, main steps, possible exceptions and verifiable result. These are **proposed** behaviours, not implementation/test reports.
 
 ## System boundary
@@ -52,6 +54,8 @@ flowchart TD
 | UC-12 | Partner/Admin | Reconstruct evidence and decisions | [Evidence and history](./12-evidence-and-audit-history.md) |
 | UC-13 | Partner | Select an approved and date-effective jurisdiction rule pack | [Jurisdiction configuration](./13-configure-jurisdiction.md) |
 | UC-14 | Security Owner | Review controls, evidence, and payment scope | [Assurance evidence review](./14-control-evidence-review.md) |
+| UC-15 | Audit Staff / Reviewer | Validate an imported accounting population | [Reconcile imported sources](./15-reconcile-source-population.md) |
+| UC-16 | Auditor / Partner | Plan required audit procedures and review decisions | [Plan and review audit work](./16-plan-audit-procedures.md) |
 
 ## Shared success conditions
 

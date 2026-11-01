@@ -6,6 +6,10 @@ sidebar_position: 2
 
 # Shared Data Model
 
+:::caution Superseded conceptual model
+The single `transaction` entity and tenant-mapping placement here are **legacy sketches**, not the canonical v1 schema. Use [Canonical Domain Model](./domain-model-v2.md), [Architecture Decisions](./decision-records.md), and [Sign-off Contract](./signoff-contract.md) for authoritative requirements.
+:::
+
 ## Global vs tenant-scoped entities
 
 Two schemas exist per database cluster: one **global** schema shared by every tenant, and one
